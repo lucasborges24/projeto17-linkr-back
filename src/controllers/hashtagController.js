@@ -1,4 +1,4 @@
-import { hashtagReposity } from "../repositories/hashtagRepository.js";
+import { hashtagReposity } from "../repositories/index.js";
 
 export async function getPostsByHashtag(req, res) {
   const { hashtag } = req.params;
