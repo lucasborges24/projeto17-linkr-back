@@ -8,7 +8,7 @@ export async function getPostsByHashtag(req, res) {
     if (!valideteHashtag) {
       return res.sendStatus(404);
     }
-    const result = await hashtagReposity.getPostsByHashtag(hashtag);
+    const { rows: result } = await hashtagReposity.getPostsByHashtag(hashtag);
     return res.status(200).send(result);
   } catch (err) {
     console.log(err);
