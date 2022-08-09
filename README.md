@@ -1,1 +1,1 @@
-# projeto17-linkr-back
+# Linkr API
