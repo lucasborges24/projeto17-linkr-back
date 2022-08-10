@@ -10,9 +10,9 @@ where users.id = $1;`;
 
 export const searchUsers = async (username) => {
   const sql = `--sql
-  SELECT users."userName" AS username, users.picture
+  SELECT users."username", users.picture
   FROM users
-  WHERE users."userName" ILIKE $1;`;
+  WHERE users."username" ILIKE $1;`;
 
   return await connection.query(sql, [`%${username}%`]);
 };
