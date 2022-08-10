@@ -13,10 +13,10 @@ export async function getPosts(req, res) {
 
 export async function openUrlPost(req, res) {
   try {
-    const { id } = req.params;
-    const { rows: url } = await postRepository.getUrlPost(id);
-    const [link] = url;
-    if (url.length === 0) {
+    const { url } = req.params;
+    const { rows: posts } = await postRepository.getUrlPost(url);
+    const [link] = posts;
+    if (posts.length === 0) {
       return res.sendStatus(404);
     }
     return res.redirect(link.url);

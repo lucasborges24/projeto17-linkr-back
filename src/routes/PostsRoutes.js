@@ -10,7 +10,7 @@ import publishSchema from "../schemas/postSchema.js";
 const postRouter = Router();
 
 postRouter.get("/timeline", getPosts);
-postRouter.get("/posts/open", openUrlPost);
+postRouter.get("/posts/open/:url", openUrlPost);
 postRouter.post("/posts", validateSchema(publishSchema), createdPost);
 
 export { postRouter };
