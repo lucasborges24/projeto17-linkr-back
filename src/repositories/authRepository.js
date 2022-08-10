@@ -32,3 +32,15 @@ export const insertUserinUsers = async (userObject) => {
     `;
   return connection.query(sql, [email, password, username, picture]);
 };
+
+export const getPasswordByEmail = async (email) => {
+  const sql = `--sql
+    SELECT
+      "password"
+    FROM
+      "users"
+    WHERE
+      email = $1;
+  `;
+  return connection.query(sql, [email]);
+};
