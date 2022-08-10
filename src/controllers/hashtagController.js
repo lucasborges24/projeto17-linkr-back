@@ -4,8 +4,8 @@ export async function getPostsByHashtag(req, res) {
   const { hashtag } = req.params;
   try {
     const { rows: hashtags } = await hashtagReposity.getHashtageByName(hashtag);
-    const [valideteHashtag] = hashtags;
-    if (!valideteHashtag) {
+    const [validateHashtag] = hashtags;
+    if (!validateHashtag) {
       return res.sendStatus(404);
     }
     const { rows: result } = await hashtagReposity.getPostsByHashtag(hashtag);
