@@ -1,10 +1,20 @@
 import { postRepository } from "../repositories/index.js";
 import dayjs from "dayjs";
+import urlMetadata from "url-metadata";
 
 export async function getPosts(req, res) {
   try {
     const { rows: posts } = await postRepository.getAllPosts();
-    return res.sendStatus(200).send(posts);
+    const [post] = posts;
+    urlMetadata(`${post.url}`).then(
+      function (metadata) {
+        console.log(metadata);
+      },
+      function (error) {
+        console.log(error);
+      }
+    );
+    return res.sendStatus(200).send(post);
   } catch (error) {
     console.log(error);
     res.sendStatus(500);
