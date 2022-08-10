@@ -44,24 +44,3 @@ export const hashtagReposity = {
   getPostsByHashtag,
   getMostUsedHashtags,
 };
-// COUNT("likesPosts") as likes
-// JOIN "likesPosts" ON posts.id = "likesPosts"."postId"
-// `
-// SELECT
-// posts.id,
-// posts.description,
-// posts.url,
-// posts."createdAt",
-// users.username,
-// users.picture,
-// count(likes."postId") AS likes
-// FROM posts
-// LEFT JOIN "likesPosts" ON posts.id = "likesPosts"."postsId"
-// JOIN users ON users.id = posts.userId
-// JOIN "hashtagsPosts" ON "hashtagsPosts" = posts.id
-// JOIN hashtags ON hashtags.id = "hashtagsPosts".id
-// WHERE hashtags.name =$1
-// GROUP BY posts.id, users.id
-// ORDER BY posts."createdAt" DESC
-// LIMIT 20
-// `[hashtag]
