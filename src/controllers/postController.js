@@ -6,7 +6,23 @@ export async function getPosts(req, res) {
   try {
     const { rows: posts } = await postRepository.getAllPosts();
 
-    res.status(200).send(posts);
+    const arr = [];
+
+    for (let i = 0; i < posts.length; i++) {
+      const metadata = await urlMetadata(posts[i].url);
+      
+
+      const urlData = {
+        title: metadata.title,
+        description: metadata.description,
+        image: metadata.image,
+      };
+      console.log(urlData);
+
+       arr.push(Object.assign(posts[i], { urlData }));
+    }
+
+    res.status(200).send(arr);
   } catch (error) {
     console.log(error);
     res.sendStatus(500);
