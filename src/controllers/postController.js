@@ -8,8 +8,8 @@ export async function deletePost(req, res) {
     if (userId !== post[0].writerId) {
       return res.status(401).send("Unauthorized, you are not the post owner");
     }
-    await postRepository.deltePostByIdOnHashtagsPosts(id);
-    await postRepository.deltePostById(id);
+    await postRepository.deletePostByIdOnHashtagsPosts(id);
+    await postRepository.deletePostById(id);
     res.status(204).send("Post deleted successfully");
   } catch (error) {
     console.log(error);
