@@ -14,5 +14,6 @@ export const searchUsers = async (username) => {
   FROM users
   WHERE users."username" ILIKE $1;`;
 
+
   return await connection.query(sql, [`%${username}%`]);
 };

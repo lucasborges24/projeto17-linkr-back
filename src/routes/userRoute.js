@@ -1,5 +1,4 @@
 import { Router } from "express";
-
 import { getUser, getUsers } from "../controllers/userController.js";
 import {
   validateHeaderSchema,
@@ -8,6 +7,7 @@ import {
 import { checkTokenBelongsSomeUser } from "../middlewares/tokenMiddleware.js";
 import { checkUserExists } from "../middlewares/userMiddleware.js";
 import { tokenSchema } from "../schemas/authSchema.js";
+
 import { searchSchema } from "../schemas/searchSchema.js";
 
 const userRouter = Router();
@@ -20,5 +20,6 @@ userRouter.post(
   checkTokenBelongsSomeUser,
   getUsers
 );
+
 
 export { userRouter };
