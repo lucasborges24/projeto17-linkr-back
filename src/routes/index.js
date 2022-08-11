@@ -10,5 +10,6 @@ const router = Router();
 router.use(authRouter);
 router.use(userRouter);
 router.use(hashtagRouter);
+router.use(userRouter);
 
 export default router;
