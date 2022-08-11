@@ -1,1 +1,3 @@
-export * from "./PostRepository.js"
+
+export * from "./postRepository.js"
+export * from "./hashtagRepository.js";
