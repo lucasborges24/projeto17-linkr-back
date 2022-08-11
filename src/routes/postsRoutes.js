@@ -2,7 +2,6 @@ import { Router } from "express";
 import {
   createdPost,
   getPosts,
-  openUrlPost,
 } from "../controllers/postController.js";
 import {
   validateHeaderSchema,
@@ -15,12 +14,11 @@ import publishSchema from "../schemas/postSchema.js";
 const postRouter = Router();
 
 postRouter.get("/timeline", getPosts);
-postRouter.get("/posts/open/:url", openUrlPost);
 postRouter.post(
   "/posts",
   validateHeaderSchema(tokenSchema),
-  validateSchema(publishSchema),
   checkTokenBelongsSomeUser,
+  validateSchema(publishSchema),
   createdPost
 );
 
