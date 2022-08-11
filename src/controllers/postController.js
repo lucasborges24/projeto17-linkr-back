@@ -11,9 +11,9 @@ export async function getPosts(req, res) {
       const metadata = await urlMetadata(posts[i].url);
 
       const urlData = {
-        title: metadata.title,
-        description: metadata.description,
-        image: metadata.image,
+        titleUrl: metadata.title,
+        descriptionUrl: metadata.description,
+        imageUrl: metadata.image,
       };
 
       arr.push(Object.assign(posts[i], { urlData }));
