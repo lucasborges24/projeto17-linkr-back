@@ -5,10 +5,11 @@ export async function deletePost(req, res) {
   const userId = res.locals.userId;
   try {
     const { rows: post } = await postRepository.getPostById(id);
+    if (post.length < 1) return res.status(404).send("Post not found");
+    console.log(post);
     if (userId !== post[0].writerId) {
       return res.status(401).send("Unauthorized, you are not the post owner");
     }
-    await postRepository.deletePostByIdOnHashtagsPosts(id);
     await postRepository.deletePostById(id);
     res.status(204).send("Post deleted successfully");
   } catch (error) {

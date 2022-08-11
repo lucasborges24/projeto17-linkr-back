@@ -9,11 +9,6 @@ async function getPostById(id) {
     [id]
   );
 }
-async function deletePostByIdOnHashtagsPosts(id) {
-  return connection.query(`DELETE FROM "hashtagsPosts" WHERE "postId" =$1`, [
-    id,
-  ]);
-}
 async function deletePostById(id) {
   return connection.query(`DELETE FROM posts WHERE id =$1`, [id]);
 }
@@ -32,6 +27,5 @@ async function updatePost(description, id) {
 export const postRepository = {
   getPostById,
   deletePostById,
-  deletePostByIdOnHashtagsPosts,
   updatePost,
 };
