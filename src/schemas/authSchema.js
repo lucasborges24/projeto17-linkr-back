@@ -11,3 +11,17 @@ export const signUpSchema = joi.object({
     )
     .required(),
 });
+
+export const signInSchema = joi.object({
+  email: joi.string().email().required().trim(),
+  password: joi.string().required(),
+});
+
+export const tokenSchema = joi
+  .object({
+    authorization: joi
+      .string()
+      .pattern(/^Bearer .+$/)
+      .required(),
+  })
+  .unknown(true);
