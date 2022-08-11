@@ -1,5 +1,5 @@
 import { Router } from "express";
-import { deltePost, editPost } from "../controllers/postController.js";
+import { deletePost, editPost } from "../controllers/postController.js";
 import {
   validateHeaderSchema,
   validateSchema,
@@ -14,7 +14,7 @@ postRouter.delete(
   "/post/:id",
   validateHeaderSchema(tokenSchema),
   checkTokenBelongsSomeUser,
-  deltePost
+  deletePost
 );
 postRouter.put(
   "/post/:id",

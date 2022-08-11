@@ -1,6 +1,6 @@
 import { postRepository } from "../repositories/index.js";
 
-export async function deltePost(req, res) {
+export async function deletePost(req, res) {
   const { id } = req.params;
   const userId = res.locals.userId;
   try {
