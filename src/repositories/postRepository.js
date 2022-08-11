@@ -2,7 +2,7 @@ import connection from "../databases/postgres.js";
 
 async function getAllPosts() {
   return connection.query(
-    `SELECT u."username", u."picture", p."url", p."description", p."createdAt", p."editedAt" FROM posts p JOIN users u ON p."writerId" = u."id" ORDER BY "createdAt" DESC LIMIT 20;`
+    `SELECT u."username", u."picture", p."id", p."url", p."description", p."createdAt", p."editedAt" FROM posts p JOIN users u ON p."writerId" = u."id" ORDER BY "createdAt" DESC LIMIT 20;`
   );
 }
 
