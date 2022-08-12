@@ -1,6 +1,6 @@
 import { Router } from "express";
 import {
-  createdPost,
+  createPost,
   getPosts,
 } from "../controllers/postController.js";
 import metadataUrl from "../middlewares/metadataMiddleware.js";
@@ -21,7 +21,7 @@ postRouter.post(
   validateSchema(publishSchema),
   checkTokenBelongsSomeUser,
   metadataUrl,
-  createdPost
+  createPost
 );
 
 export { postRouter };

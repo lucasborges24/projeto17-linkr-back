@@ -30,3 +30,13 @@ export async function getTopHashtags(req, res) {
     res.sendStatus(500);
   }
 }
+
+export async function getHashtags(name) {
+  return connection.query(`SELECT * FROM "hashtags" WHERE "name" = $1`, [name]);
+}
+
+export async function createHashtags(hashtagName) {
+  return connection.query(`INSERT INTO "hashtags" ("name") VALUES ($1)`, [
+    hashtagName,
+  ]);
+}

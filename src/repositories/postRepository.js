@@ -26,15 +26,6 @@ async function insertPost(
   );
 }
 
-async function getHashtags(name) {
-  return connection.query(`SELECT * FROM "hashtags" WHERE "name" = $1`, [name]);
-}
-
-async function createdHashtags(hashtagName) {
-  return connection.query(`INSERT INTO "hashtags" ("name") VALUES ($1)`, [
-    hashtagName,
-  ]);
-}
 
 async function insertHashtagPost(postId, hashtagId) {
   return connection.query(
@@ -47,7 +38,5 @@ export const postRepository = {
   getAllPosts,
   getUrlPost,
   insertPost,
-  getHashtags,
-  createdHashtags,
   insertHashtagPost,
 };

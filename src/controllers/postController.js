@@ -8,12 +8,11 @@ export async function getPosts(req, res) {
 
     res.status(200).send(posts);
   } catch (error) {
-    console.log(error);
-    res.sendStatus(500);
+    res.status(500).send(`Internal system error.\n More details: ${error.message}`);
   }
 }
 
-export async function createdPost(req, res) {
+export async function createPost(req, res) {
   try {
     const { userId, urlTitle, urlDescription, urlImage } = res.locals;
     const { url, description } = req.body;
@@ -67,7 +66,8 @@ export async function createdPost(req, res) {
 
     res.status(201).send("Your post was created");
   } catch (error) {
-    console.log(error);
-    res.sendStatus(500);
+    res
+      .status(500)
+      .send(`Internal system error.\n More details: ${error.message}`);
   }
 }
