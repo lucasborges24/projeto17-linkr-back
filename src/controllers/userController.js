@@ -1,9 +1,20 @@
-import { searchUsers } from "../repositories/userRepository.js";
+import {
+  getUserPostsById,
+  searchUsers,
+} from "../repositories/userRepository.js";
 
-export const getUser = async (req, res) => {
+export const getUserPosts = async (req, res) => {
   const { user } = res.locals;
 
-  return res.send("ok");
+  try {
+    const { rows: posts } = await getUserPostsById(user.id);
+
+    return res.send(posts);
+  } catch (error) {
+    res
+      .status(500)
+      .send(`Internal system error.\n More details: ${error.message}`);
+  }
 };
 
 export const getUsers = async (req, res) => {

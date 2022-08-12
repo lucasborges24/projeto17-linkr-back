@@ -1,5 +1,5 @@
 import { Router } from "express";
-import { getUser, getUsers } from "../controllers/userController.js";
+import { getUserPosts, getUsers } from "../controllers/userController.js";
 import {
   validateHeaderSchema,
   validateSchema,
@@ -12,7 +12,13 @@ import { searchSchema } from "../schemas/searchSchema.js";
 
 const userRouter = Router();
 
-userRouter.get("/user/:id", checkUserExists, getUser);
+userRouter.get(
+  "/user/:id",
+  validateHeaderSchema(tokenSchema),
+  checkTokenBelongsSomeUser,
+  checkUserExists,
+  getUserPosts
+);
 userRouter.post(
   "/search",
   validateHeaderSchema(tokenSchema),
@@ -20,6 +26,5 @@ userRouter.post(
   checkTokenBelongsSomeUser,
   getUsers
 );
-
 
 export { userRouter };
