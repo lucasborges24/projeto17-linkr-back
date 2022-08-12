@@ -41,7 +41,7 @@ export const getUserPostsById = async (id) => {
 
 export const searchUsers = async (username) => {
   const sql = `--sql
-  SELECT users."username", users.picture
+  SELECT users.id, users."username", users.picture
   FROM users
   WHERE users."username" ILIKE $1;`;
 
