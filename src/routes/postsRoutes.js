@@ -3,6 +3,7 @@ import {
   createdPost,
   getPosts,
 } from "../controllers/postController.js";
+import metadataUrl from "../middlewares/metadataMiddleware.js";
 import {
   validateHeaderSchema,
   validateSchema,
@@ -17,6 +18,7 @@ postRouter.get("/timeline", getPosts);
 postRouter.post(
   "/posts",
   validateHeaderSchema(tokenSchema),
+  metadataUrl,
   checkTokenBelongsSomeUser,
   validateSchema(publishSchema),
   createdPost
