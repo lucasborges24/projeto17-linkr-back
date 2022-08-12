@@ -1,4 +1,4 @@
-import { postRepository } from "../repositories/index.js";
+import { postRepository, hashtagReposity } from "../repositories/index.js";
 
 export async function getPosts(req, res) {
   try {
@@ -38,11 +38,11 @@ export async function createPost(req, res) {
 
       if (hashtagsPosts.length > 0) {
         for (let i = 0; i < hashtagsPosts.length; i++) {
-          const { rows: hashtags } = await postRepository.getHashtags(
+          const { rows: hashtags } = await hashtagReposity.getHashtags(
             hashtagsPosts[i]
           );
           if (hashtags[0].length === 0) {
-            const { rows: postHashtags } = await postRepository.createdHashtags(
+            const { rows: postHashtags } = await hashtagReposity.createHashtags(
               hashtagsPosts[i]
             );
             console.log(postHashtags[0]);

@@ -39,8 +39,21 @@ async function getMostUsedHashtags(limit) {
     [limit]
   );
 }
+
+async function getHashtags(name) {
+  return connection.query(`SELECT * FROM "hashtags" WHERE "name" = $1`, [name]);
+}
+
+async function createHashtags(hashtagName) {
+  return connection.query(`INSERT INTO "hashtags" ("name") VALUES ($1)`, [
+    hashtagName,
+  ]);
+}
+
 export const hashtagReposity = {
   getHashtageByName,
   getPostsByHashtag,
   getMostUsedHashtags,
+  getHashtags,
+  createHashtags,
 };

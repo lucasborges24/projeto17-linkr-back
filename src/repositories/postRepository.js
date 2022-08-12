@@ -2,7 +2,7 @@ import connection from "../databases/postgres.js";
 
 async function getAllPosts() {
   return connection.query(
-    `SELECT u."username", u."picture", p."id" as "postId", p."url", p."description", p."createdAt", p."editedAt", COUNT("likesPosts"."id") as "likes" FROM posts p JOIN users u ON p."writerId" = u."id" LEFT JOIN "likesPosts" ON "likesPosts"."postId" = p.id GROUP BY p."id", u."id" ORDER BY "createdAt" DESC LIMIT 20`
+    `SELECT u."username", u."picture", p."id" as "postId", p."url", p."description", p."createdAt", p."editedAt", COUNT("likesPosts"."id") as "likes" FROM posts p JOIN users u ON p."writerId" = u."id" LEFT JOIN "likesPosts" ON "likesPosts"."postId" = p.id GROUP BY p."id", u."id" ORDER BY "createdAt" DESC`
   );
 }
 
@@ -25,7 +25,6 @@ async function insertPost(
     [userId, url, description, urlTitle, urlDescription, urlImage]
   );
 }
-
 
 async function insertHashtagPost(postId, hashtagId) {
   return connection.query(
