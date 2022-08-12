@@ -15,9 +15,9 @@ export async function getPosts(req, res) {
 
 export async function createdPost(req, res) {
   try {
-    const { postId, userId, urlTitle, urlDescription, urlImage } = res.locals;
+    const { userId, urlTitle, urlDescription, urlImage } = res.locals;
     const { url, description } = req.body;
-    await postRepository.insertPost(
+    const { rows: post } = await postRepository.insertPost(
       userId,
       url,
       description,
@@ -37,15 +37,32 @@ export async function createdPost(req, res) {
         );
       }
 
-      const { rows: hashtags } = await postRepository.getHashtags();
-
-      for (let i = 0; i < hashtags.length; i++) {
-        for (let j = 0; j < hashtagsPosts.length; j++) {
-          if (hashtagsPosts[j] === hashtags[i]) {
-            await postRepository.insertHashtagPost(postId, hashtags[i].id);
+      if (hashtagsPosts.length > 0) {
+        for (let i = 0; i < hashtagsPosts.length; i++) {
+          const { rows: hashtags } = await postRepository.getHashtags(
+            hashtagsPosts[i]
+          );
+          if (hashtags[0].length === 0) {
+            const { rows: postHashtags } = await postRepository.createdHashtags(
+              hashtagsPosts[i]
+            );
+            console.log(postHashtags[0]);
+            await postRepository.insertHashtagPost(
+              post[0].id,
+              postHashtags[0].id
+            );
+          } else {
+            await postRepository.insertHashtagPost(post[0].id, hashtags[0].id);
           }
         }
       }
+      /* for (let i = 0; i < hashtags.length; i++) {
+        for (let j = 0; j < hashtagsPosts.length; j++) {
+          if (hashtagsPosts[j] === hashtags[i].name) {
+            //await postRepository.insertHashtagPost(postId, hashCurrent[i].id);
+          }
+        }
+      } */
     }
 
     res.status(201).send("Your post was created");

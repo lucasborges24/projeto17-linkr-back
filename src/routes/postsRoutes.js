@@ -18,9 +18,9 @@ postRouter.get("/timeline", getPosts);
 postRouter.post(
   "/posts",
   validateHeaderSchema(tokenSchema),
-  metadataUrl,
-  checkTokenBelongsSomeUser,
   validateSchema(publishSchema),
+  checkTokenBelongsSomeUser,
+  metadataUrl,
   createdPost
 );
 

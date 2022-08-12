@@ -12,20 +12,35 @@ async function getUrlPost(id) {
   ]);
 }
 
-async function insertPost(writerId, url, description, createdAt) {
+async function insertPost(
+  userId,
+  url,
+  description,
+  urlTitle,
+  urlDescription,
+  urlImage
+) {
   return connection.query(
-    `INSERT INTO "posts" ("writerId", "url","description","createdAt") VALUES($1,$2,$3,$4)`,
-    [writerId, url, description, createdAt]
+    `INSERT INTO "posts" ("writerId", "url","description", "urlTitle", "urlDescription", "urlImage" ) VALUES($1,$2,$3,$4, $5, $6)`,
+    [userId, url, description, urlTitle, urlDescription, urlImage]
   );
 }
 
-async function getHashtags() {
-  `SELECT * FROM "hashtags"`;
+async function getHashtags(name) {
+  return connection.query(`SELECT * FROM "hashtags" WHERE "name" = $1`, [name]);
+}
+
+async function createdHashtags(hashtagName) {
+  return connection.query(`INSERT INTO "hashtags" ("name") VALUES ($1)`, [
+    hashtagName,
+  ]);
 }
 
 async function insertHashtagPost(postId, hashtagId) {
-  `INSERT INTO "hashtagsPosts" ("postId", "hashtagId") VALUES($1,$2)`,
-    [postId, hashtagId];
+  return connection.query(
+    `INSERT INTO "hashtagsPosts" ("postId", "hashtagId") VALUES($1,$2)`,
+    [postId, hashtagId]
+  );
 }
 
 export const postRepository = {
@@ -33,5 +48,6 @@ export const postRepository = {
   getUrlPost,
   insertPost,
   getHashtags,
+  createdHashtags,
   insertHashtagPost,
 };
