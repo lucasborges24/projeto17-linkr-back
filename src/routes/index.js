@@ -1,4 +1,5 @@
 import { Router } from "express";
+import { postRouter } from "./postsRoutes.js";
 
 import { authRouter } from "./authRoute.js";
 import { userRouter } from "./userRoute.js";
@@ -6,6 +7,8 @@ import { userRouter } from "./userRoute.js";
 import hashtagRouter from "./hashtagRoute.js";
 
 const router = Router();
+
+router.use(postRouter);
 
 router.use(authRouter);
 router.use(userRouter);
