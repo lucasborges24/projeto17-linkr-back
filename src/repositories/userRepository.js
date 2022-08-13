@@ -20,6 +20,7 @@ export const getUser = async (id) => {
 export const getUserPostsById = async (id) => {
   const sql = `--sql
   SELECT
+    posts.id as "postId",
     users.username,
     users.picture,
     count("likesPosts".id) as likes,
