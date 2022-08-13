@@ -3,7 +3,6 @@ import { postRouter } from "./postsRoutes.js";
 
 import { authRouter } from "./authRoute.js";
 import { userRouter } from "./userRoute.js";
-import { postRouter } from "./postsRoute.js";
 
 import hashtagRouter from "./hashtagRoute.js";
 
