@@ -1,4 +1,5 @@
 import { postRepository, hashtagReposity } from "../repositories/index.js";
+import { getUsernamesLikedPost } from "../repositories/likesRepository.js";
 
 export async function getPosts(req, res) {
   try {
@@ -6,9 +7,24 @@ export async function getPosts(req, res) {
 
     const { rows: posts } = await postRepository.getAllPosts();
 
-    res.status(200).send(posts);
+    const postsWithLikes = await Promise.all(
+      posts.map(async (post) => {
+        const { rows: likesUsername } = await getUsernamesLikedPost(
+          post.postId
+        );
+
+        return {
+          ...post,
+          likesUsername: likesUsername.map(({ username }) => username),
+        };
+      })
+    );
+
+    res.status(200).send(postsWithLikes);
   } catch (error) {
-    res.status(500).send(`Internal system error.\n More details: ${error.message}`);
+    res
+      .status(500)
+      .send(`Internal system error.\n More details: ${error.message}`);
   }
 }
 
