@@ -1,30 +1,27 @@
 import { Router } from "express";
-import { getUserPosts, getUsers } from "../controllers/userController.js";
+import { deletePost, editPost } from "../controllers/postController.js";
 import {
   validateHeaderSchema,
   validateSchema,
 } from "../middlewares/schemaMiddleware.js";
 import { checkTokenBelongsSomeUser } from "../middlewares/tokenMiddleware.js";
-import { checkUserExists } from "../middlewares/userMiddleware.js";
 import { tokenSchema } from "../schemas/authSchema.js";
+import editSchema from "../schemas/editSchema.js";
 
-import { searchSchema } from "../schemas/searchSchema.js";
+const postRouter = Router();
 
-const userRouter = Router();
-
-userRouter.get(
-  "/user/:id",
+postRouter.delete(
+  "/post/:id",
   validateHeaderSchema(tokenSchema),
   checkTokenBelongsSomeUser,
-  checkUserExists,
-  getUserPosts
+  deletePost
 );
-userRouter.post(
-  "/search",
+postRouter.put(
+  "/post/:id",
+  validateSchema(editSchema),
   validateHeaderSchema(tokenSchema),
-  validateSchema(searchSchema),
   checkTokenBelongsSomeUser,
-  getUsers
+  editPost
 );
 
-export { userRouter };
+export { postRouter };

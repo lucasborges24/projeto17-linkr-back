@@ -1,15 +1,13 @@
-import { getUserPostsById } from "../repositories/userRepository.js";
+import { getUser } from "../repositories/userRepository.js";
 
 export const checkUserExists = async (req, res, next) => {
   try {
     const { id } = req.params;
 
-    const { rows: user } = await getUserPostsById(id);
+    const { rows: user } = await getUser(id);
     if (!user[0]) {
       return res.status(404).send("User not found!");
     }
-
-    delete user[0].password;
 
     res.locals.user = user[0];
 
