@@ -22,6 +22,7 @@ export const getUserPostsById = async (id) => {
     SELECT
     u."username",
     u."picture",
+    u."id" as "userId",
     p."id" as "postId",
     p."url",
     p."description",
