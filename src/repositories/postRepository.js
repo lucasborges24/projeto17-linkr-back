@@ -1,5 +1,29 @@
 import connection from "../databases/postgres.js";
 
+async function getPostById(id) {
+  return connection.query(
+    `
+  SELECT * FROM posts
+  WHERE posts.id=$1
+  `,
+    [id]
+  );
+}
+async function deletePostById(id) {
+  return connection.query(`DELETE FROM posts WHERE id =$1`, [id]);
+}
+
+async function updatePost(description, id) {
+  return connection.query(
+    `
+    UPDATE posts 
+    SET description=$1,
+    "editedAt"=NOW() 
+    WHERE id=$2
+    `,
+    [description, id]
+  );
+}
 async function getAllPosts() {
   return connection.query(
     `SELECT
@@ -39,8 +63,8 @@ async function getPostByUserId(userId) {
     posts."createdAt" DESC
   LIMIT
     1;
-  `
-  return connection.query(sql, [userId])
+  `;
+  return connection.query(sql, [userId]);
 }
 
 async function getUrlPost(id) {
@@ -75,5 +99,8 @@ export const postRepository = {
   getUrlPost,
   insertPost,
   insertHashtagPost,
-  getPostByUserId
+  getPostByUserId,
+  getPostById,
+  deletePostById,
+  updatePost,
 };

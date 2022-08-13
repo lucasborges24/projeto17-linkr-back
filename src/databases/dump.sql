@@ -49,8 +49,11 @@ ADD
 ALTER TABLE
 	"hashtagsPosts"
 ADD
-	CONSTRAINT "hashtagsPosts_fk0" FOREIGN KEY ("postId") REFERENCES "posts"("id");
+	< < < < < < < HEAD CONSTRAINT "hashtagsPosts_fk0" FOREIGN KEY ("postId") REFERENCES "posts"("id");
 
+== == == = CONSTRAINT "hashtagsPosts_fk0" FOREIGN KEY ("postId") REFERENCES "posts"("id") ON DELETE CASCADE;
+
+> > > > > > > 9d227b086234931ee4995c6a1c2bcf80d738dfd5
 ALTER TABLE
 	"hashtagsPosts"
 ADD
@@ -59,10 +62,9 @@ ADD
 ALTER TABLE
 	"likesPosts"
 ADD
-	CONSTRAINT "likesPosts_fk0" FOREIGN KEY ("postId") REFERENCES "posts"("id");
+	CONSTRAINT "likesPosts_fk0" FOREIGN KEY ("postId") REFERENCES "posts"("id") ON DELETE CASCADE;
 
 ALTER TABLE
 	"likesPosts"
 ADD
 	CONSTRAINT "likesPosts_fk1" FOREIGN KEY ("userId") REFERENCES "users"("id");
-
