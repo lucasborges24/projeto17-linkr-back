@@ -42,10 +42,13 @@ export async function createPost(req, res) {
             hashtagsPosts[i]
           );
           if (hashtags[0].length === 0) {
-            const { rows: postHashtags } = await hashtagReposity.createHashtags(
+            await hashtagReposity.createHashtags(
               hashtagsPosts[i]
             );
-            console.log(postHashtags[0]);
+            const { rows: idhashtag } = await hashtagReposity.getHashtags(
+              hashtagsPosts[i]
+            );
+            
             await postRepository.insertHashtagPost(
               post[0].id,
               postHashtags[0].id
