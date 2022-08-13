@@ -23,6 +23,7 @@ export const getUserPostsById = async (id) => {
     users.username,
     users.picture,
     count("likesPosts".id) as likes,
+    posts.id,
     posts.description,
     posts.url
   FROM
