@@ -1,3 +1,4 @@
+import { getUsernamesLikedPost } from "../repositories/likesRepository.js";
 import {
   getUserPostsById,
   searchUsers,
@@ -9,7 +10,20 @@ export const getUserPosts = async (req, res) => {
   try {
     const { rows: posts } = await getUserPostsById(user.id);
 
-    return res.send(posts);
+    const postsWithLikes = await Promise.all(
+      posts.map(async (post) => {
+        const { rows: likesUsername } = await getUsernamesLikedPost(
+          post.postId
+        );
+
+        return {
+          ...post,
+          likesUsername: likesUsername.map(({ username }) => username),
+        };
+      })
+    );
+
+    return res.send(postsWithLikes);
   } catch (error) {
     res
       .status(500)

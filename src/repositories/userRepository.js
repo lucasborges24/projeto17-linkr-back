@@ -19,6 +19,7 @@ export const getUser = async (id) => {
 
 export const getUserPostsById = async (id) => {
   const sql = `--sql
+
     SELECT
     u."username",
     u."picture",
