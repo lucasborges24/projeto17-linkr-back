@@ -47,7 +47,7 @@ async function getAllPosts() {
       p."id",
       u."id"
     ORDER BY
-      "createdAt" DESC`
+      "createdAt" DESC LIMIT 20`
   );
 }
 
