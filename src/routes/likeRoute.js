@@ -1,5 +1,5 @@
 import { Router } from "express";
-import { likePost } from "../controllers/likeController.js";
+import { getLikes, likePost } from "../controllers/likeController.js";
 import { validateHeaderSchema } from "../middlewares/schemaMiddleware.js";
 import { checkTokenBelongsSomeUser } from "../middlewares/tokenMiddleware.js";
 import { tokenSchema } from "../schemas/authSchema.js";
@@ -10,6 +10,13 @@ likeRouter.post(
   validateHeaderSchema(tokenSchema),
   checkTokenBelongsSomeUser,
   likePost
+);
+
+likeRouter.get(
+  "/like",
+  validateHeaderSchema(tokenSchema),
+  checkTokenBelongsSomeUser,
+  getLikes
 );
 
 export { likeRouter };

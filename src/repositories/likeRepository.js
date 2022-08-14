@@ -21,4 +21,11 @@ async function removeLike(postId, userId) {
   );
 }
 
-export const likeRepository = { insertLike, getLike, removeLike };
+async function getLikesPost(postId) {
+  return connection.query(
+    `SELECT username FROM users JOIN "likesPosts" ON "likesPosts"."userId" = users.id WHERE "likesPosts"."postId" = $1 ORDER BY "likesPosts"."id" DESC`,
+    [postId]
+  );
+}
+
+export const likeRepository = { insertLike, getLike, removeLike, getLikesPost };

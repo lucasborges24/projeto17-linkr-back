@@ -23,3 +23,17 @@ export async function likePost(req, res) {
       .send(`Internal system error.\n More details: ${error.message}`);
   }
 }
+
+export async function getLikes(req, res) {
+  try {
+    const { postId } = req.body;
+
+    const { rows: likes } = await likeRepository.getLikesPost(postId);
+
+    res.status(200).send(likes);
+  } catch (error) {
+    res
+      .status(500)
+      .send(`Internal system error.\n More details: ${error.message}`);
+  }
+}
