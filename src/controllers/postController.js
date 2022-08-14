@@ -69,7 +69,7 @@ export async function createPost(req, res) {
       description,
       urlTitle,
       urlDescription,
-      urlImage
+      urlImage,
     );
     const { rows: post } = await postRepository.getPostByUserId(userId);
 
