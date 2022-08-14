@@ -9,7 +9,6 @@ export async function getUsernamesLikedPost(postId) {
     JOIN "likesPosts" ON "likesPosts"."userId" = users.id
     WHERE
     "likesPosts"."postId" = $1
-    LIMIT 2
     `;
 
   return await connection.query(sql, [postId]);
