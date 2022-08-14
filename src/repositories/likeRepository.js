@@ -7,4 +7,4 @@ async function insertLike(postId, userId) {
   );
 }
 
-export const likeRepository = [insertLike];
+export const likeRepository = { insertLike };
