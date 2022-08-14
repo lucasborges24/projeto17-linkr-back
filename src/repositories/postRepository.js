@@ -54,15 +54,16 @@ async function getPostByUserId(userId) {
   const sql = `--sql
   SELECT
     posts."id", posts."createdAt"
+
   FROM
-    posts
-    JOIN users ON users."id" = posts."writerId"
+    users
+    JOIN posts ON users."id" = posts."writerId"
   WHERE
     users."id" = $1
   ORDER BY
-    posts."createdAt" DESC
-  LIMIT
-    1;
+     posts."id" DESC
+   LIMIT
+     1;
   `;
   return connection.query(sql, [userId]);
 }

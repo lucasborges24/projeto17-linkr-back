@@ -1,4 +1,5 @@
 import { postRepository, hashtagReposity } from "../repositories/index.js";
+import { getUsernamesLikedPost } from "../repositories/likesRepository.js";
 
 export async function deletePost(req, res) {
   const { id } = req.params;
@@ -37,7 +38,20 @@ export async function getPosts(req, res) {
     //const { page } = req.query;
     const { rows: posts } = await postRepository.getAllPosts();
 
-    res.status(200).send(posts);
+    const postsWithLikes = await Promise.all(
+      posts.map(async (post) => {
+        const { rows: likesUsername } = await getUsernamesLikedPost(
+          post.postId
+        );
+
+        return {
+          ...post,
+          likesUsername: likesUsername.map(({ username }) => username),
+        };
+      })
+    );
+
+    res.status(200).send(postsWithLikes);
   } catch (error) {
     res
       .status(500)
@@ -66,7 +80,10 @@ export async function createPost(req, res) {
 
       for (let i = 0; i < hashtagsFilter.length; i++) {
         hashtagsPosts.push(
-          hashtagsFilter[i].replace(/,/g, "").replace(/\./g, "")
+          hashtagsFilter[i]
+            .replace(/,/g, "")
+            .replace(/\./g, "")
+            .replace("#", "")
         );
       }
       if (hashtagsPosts.length > 0) {
