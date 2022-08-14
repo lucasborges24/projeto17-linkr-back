@@ -5,6 +5,7 @@ import { authRouter } from "./authRoute.js";
 import { userRouter } from "./userRoute.js";
 
 import hashtagRouter from "./hashtagRoute.js";
+import { likeRouter } from "./likeRoute.js";
 
 const router = Router();
 
@@ -13,5 +14,7 @@ router.use(userRouter);
 router.use(hashtagRouter);
 router.use(postRouter);
 router.use(userRouter);
+router.use(likeRouter);
+
 
 export default router;

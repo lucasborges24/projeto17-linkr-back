@@ -34,8 +34,7 @@ export async function editPost(req, res) {
 }
 export async function getPosts(req, res) {
   try {
-    //const { hashtag } = req.query;
-
+    //const { page } = req.query;
     const { rows: posts } = await postRepository.getAllPosts();
 
     res.status(200).send(posts);
@@ -59,7 +58,6 @@ export async function createPost(req, res) {
       urlImage
     );
     const { rows: post } = await postRepository.getPostByUserId(userId);
-    console.log(post)
 
     if (description) {
       const arr = description.split(" ");
@@ -89,13 +87,6 @@ export async function createPost(req, res) {
           }
         }
       }
-      /* for (let i = 0; i < hashtags.length; i++) {
-        for (let j = 0; j < hashtagsPosts.length; j++) {
-          if (hashtagsPosts[j] === hashtags[i].name) {
-            //await postRepository.insertHashtagPost(postId, hashCurrent[i].id);
-          }
-        }
-      } */
     }
 
     res.status(201).send("Your post was created");
