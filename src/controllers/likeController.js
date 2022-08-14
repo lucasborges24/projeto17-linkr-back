@@ -5,6 +5,13 @@ export async function likePost(req, res) {
     const { postId } = req.body;
     const userId = res.locals.userId;
 
+    const { rows: like } = await likeRepository.getLike(postId, userId);
+
+    if (like.length > 0) {
+      await likeRepository.removeLike(postId, userId);
+      return res.status(200).send("deslike");
+    }
+
     if (postId && userId) {
       await likeRepository.insertLike(postId, userId);
       return res.status(200).send("liked");
