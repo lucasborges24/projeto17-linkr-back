@@ -2,7 +2,7 @@ import { likeRepository } from "../repositories/index.js";
 
 export async function likePost(req, res) {
   try {
-    const { postId } = req.body;
+    const { postId } = req.params;
     const userId = res.locals.userId;
 
     const { rows: like } = await likeRepository.getLike(postId, userId);
@@ -16,7 +16,6 @@ export async function likePost(req, res) {
       await likeRepository.insertLike(postId, userId);
       return res.status(200).send("liked");
     }
-    res.sendStatus(403);
   } catch (error) {
     res
       .status(500)

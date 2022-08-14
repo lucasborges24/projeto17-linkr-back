@@ -6,7 +6,7 @@ import { tokenSchema } from "../schemas/authSchema.js";
 const likeRouter = Router();
 
 likeRouter.post(
-  "/like",
+  "/like/:postId",
   validateHeaderSchema(tokenSchema),
   checkTokenBelongsSomeUser,
   likePost
