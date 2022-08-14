@@ -33,10 +33,16 @@ export const signin = async (req, res) => {
   try {
     const { rows: user } = await getUserByEmail(email);
     const { id: userId } = user[0];
+    const userProfile = {
+      userId,
+      userPicture: user[0].picture,
+      userName: user[0].username,
+    };
+
     const data = { userId };
     const { JWT_SECRETKEY } = process.env;
     const token = jwt.sign(data, JWT_SECRETKEY, jwtExpire);
-    res.status(200).send(token);
+    res.status(200).send({ token, userProfile });
   } catch (error) {
     res
       .status(500)
