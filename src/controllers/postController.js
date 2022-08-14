@@ -30,9 +30,8 @@ export async function editPost(req, res) {
     await postRepository.updatePost(description, id);
     return res.status(200).send("Post edited successfully");
   } catch (error) {
-
     res.sendStatus(500);
-    }
+  }
 }
 export async function getPosts(req, res) {
   try {
@@ -82,7 +81,10 @@ export async function createPost(req, res) {
 
       for (let i = 0; i < hashtagsFilter.length; i++) {
         hashtagsPosts.push(
-          hashtagsFilter[i].replace(/,/g, "").replace(/\./g, "")
+          hashtagsFilter[i]
+            .replace(/,/g, "")
+            .replace(/\./g, "")
+            .replace("#", "")
         );
       }
       if (hashtagsPosts.length > 0) {
