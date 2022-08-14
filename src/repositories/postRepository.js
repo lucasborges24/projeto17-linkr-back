@@ -53,7 +53,8 @@ async function getAllPosts() {
 async function getPostByUserId(userId) {
   const sql = `--sql
   SELECT
-    posts.id
+    posts."id", posts."createdAt"
+
   FROM
     users
     JOIN posts ON users."id" = posts."writerId"

@@ -35,8 +35,7 @@ export async function editPost(req, res) {
 }
 export async function getPosts(req, res) {
   try {
-    //const { hashtag } = req.query;
-
+    //const { page } = req.query;
     const { rows: posts } = await postRepository.getAllPosts();
 
     const postsWithLikes = await Promise.all(
@@ -92,6 +91,7 @@ export async function createPost(req, res) {
           const { rows: hashtags } = await hashtagReposity.getHashtags(
             hashtagsPosts[i]
           );
+
           if (hashtags.length === 0) {
             await hashtagReposity.createHashtags(hashtagsPosts[i]);
             const { rows: idHashtag } = await hashtagReposity.getHashtags(
@@ -104,13 +104,6 @@ export async function createPost(req, res) {
           }
         }
       }
-      /* for (let i = 0; i < hashtags.length; i++) {
-        for (let j = 0; j < hashtagsPosts.length; j++) {
-          if (hashtagsPosts[j] === hashtags[i].name) {
-            //await postRepository.insertHashtagPost(postId, hashCurrent[i].id);
-          }
-        }
-      } */
     }
 
     res.status(201).send("Your post was created");
