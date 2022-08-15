@@ -20,12 +20,43 @@ export async function deletePost(req, res) {
 export async function editPost(req, res) {
   const { id } = req.params;
   const userId = res.locals.userId;
-  const description = req.body;
+  const { description } = req.body;
   try {
     const { rows: post } = await postRepository.getPostById(id);
-    console.log(post[0]);
     if (userId !== post[0].writerId) {
       return res.status(401).send("Unauthorized, you are not the post owner");
+    }
+    if (description) {
+
+      const arr = description.split(" ");
+      const hashtagsFilter = arr.filter((hashtag) => hashtag.startsWith("#"));
+      const hashtagsPosts = [];
+      for (let i = 0; i < hashtagsFilter.length; i++) {
+        hashtagsPosts.push(
+          hashtagsFilter[i]
+            .replace(/,/g, "")
+            .replace(/\./g, "")
+            .replace("#", "")
+        );
+      }
+      if (hashtagsPosts.length > 0) {
+        for (let i = 0; i < hashtagsPosts.length; i++) {
+          const { rows: hashtags } = await hashtagReposity.getHashtags(
+            hashtagsPosts[i]
+          );
+
+          if (hashtags.length === 0) {
+            await hashtagReposity.createHashtags(hashtagsPosts[i]);
+            const { rows: idHashtag } = await hashtagReposity.getHashtags(
+              hashtagsPosts[i]
+            );
+
+            await postRepository.insertHashtagPost(post[0].id, idHashtag[0].id);
+          } else {
+            await postRepository.insertHashtagPost(post[0].id, hashtags[0].id);
+          }
+        }
+      }
     }
     await postRepository.updatePost(description, id);
     return res.status(200).send("Post edited successfully");
@@ -69,7 +100,7 @@ export async function createPost(req, res) {
       description,
       urlTitle,
       urlDescription,
-      urlImage,
+      urlImage
     );
     const { rows: post } = await postRepository.getPostByUserId(userId);
 

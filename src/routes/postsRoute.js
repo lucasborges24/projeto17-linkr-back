@@ -8,15 +8,15 @@ import { checkTokenBelongsSomeUser } from "../middlewares/tokenMiddleware.js";
 import { tokenSchema } from "../schemas/authSchema.js";
 import editSchema from "../schemas/editSchema.js";
 
-const postRouter = Router();
+const postRoute = Router();
 
-postRouter.delete(
+postRoute.delete(
   "/post/:id",
   validateHeaderSchema(tokenSchema),
   checkTokenBelongsSomeUser,
   deletePost
 );
-postRouter.put(
+postRoute.put(
   "/post/:id",
   validateSchema(editSchema),
   validateHeaderSchema(tokenSchema),
@@ -24,4 +24,4 @@ postRouter.put(
   editPost
 );
 
-export { postRouter };
+export { postRoute };

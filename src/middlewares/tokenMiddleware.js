@@ -5,6 +5,7 @@ dotenv.config();
 
 export const checkTokenBelongsSomeUser = (req, res, next) => {
   const token = res.locals.headers.authorization.split(" ")[1];
+
   const { JWT_SECRETKEY } = process.env;
   try {
     const { userId } = jwt.verify(token, JWT_SECRETKEY);
