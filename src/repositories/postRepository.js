@@ -33,7 +33,7 @@ async function getAllPosts() {
       p."id" as "postId",
       p."url",
       p."description",
-      p."createdAt",
+      p."createdAt" AS "postCreatedAt",
       p."editedAt",
       COUNT("likesPosts"."id") as "likes",
       p."urlTitle",
@@ -47,7 +47,7 @@ async function getAllPosts() {
       p."id",
       u."id"
     ORDER BY
-      "createdAt" DESC LIMIT 20`
+      p.id DESC LIMIT 20`
   );
 }
 

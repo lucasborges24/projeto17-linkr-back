@@ -12,6 +12,9 @@ async function getPostsByHashtag(hashtag) {
   users.id AS "writerId",
   users.username, 
   users.picture,
+  posts."urlImage",
+  posts."urlDescription",
+  posts."urlTitle",
   COUNT("likesPosts"."postId") as likes
   FROM users
   JOIN posts ON posts."writerId" = users.id
