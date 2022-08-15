@@ -51,6 +51,16 @@ async function getAllPosts() {
   );
 }
 
+async function deleteHashtagsPosts(postId) {
+  const sql = `--sql
+  DELETE FROM
+    "hashtagsPosts"
+  WHERE
+    "postId" = $1;
+    `;
+  return connection.query(sql, [postId]);
+}
+
 async function getPostByUserId(userId) {
   const sql = `--sql
   SELECT
@@ -105,4 +115,5 @@ export const postRepository = {
   getPostById,
   deletePostById,
   updatePost,
+  deleteHashtagsPosts,
 };
