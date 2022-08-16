@@ -21,15 +21,13 @@ export const getUserPostsById = async (id) => {
   const sql = `--sql
 
     SELECT
-    u."username",
-    u."picture",
     u."id" as "userId",
     p."id" as "postId",
     p."url",
     p."description",
     p."createdAt",
     p."editedAt",
-    COUNT("likesPosts"."id") as "likes",
+    COUNT("likesPosts"."id")::int as "likes",
     p."urlTitle",
     p."urlDescription",
     p."urlImage"
