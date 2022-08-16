@@ -1,7 +1,6 @@
 CREATE TABLE users (
 	"id" serial NOT NULL,
 	"username" TEXT NOT NULL UNIQUE,
-	"name" TEXT NOT NULL,
 	"email" TEXT NOT NULL UNIQUE,
 	"password" TEXT NOT NULL,
 	"picture" TEXT NOT NULL,
