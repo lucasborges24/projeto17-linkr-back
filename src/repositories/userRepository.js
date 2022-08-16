@@ -43,7 +43,7 @@ export const getUserPostsById = async (id) => {
     p."id",
     u."id"
   ORDER BY
-    "createdAt" DESC
+    p.id DESC
   `;
 
   return await connection.query(sql, [id]);

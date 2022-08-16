@@ -23,7 +23,7 @@ async function getPostsByHashtag(hashtag) {
   LEFT JOIN "likesPosts" ON posts.id = "likesPosts"."postId"
   WHERE hashtags.name=$1
   GROUP BY posts.id, users.id
-  ORDER BY posts."createdAt" DESC
+  ORDER BY posts.id DESC
   LIMIT 20
   `,
     [hashtag]
