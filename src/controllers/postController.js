@@ -27,7 +27,6 @@ export async function editPost(req, res) {
       return res.status(401).send("Unauthorized, you are not the post owner");
     }
     if (description) {
-
       const arr = description.split(" ");
       const hashtagsFilter = arr.filter((hashtag) => hashtag.startsWith("#"));
       const hashtagsPosts = [];
@@ -66,11 +65,27 @@ export async function editPost(req, res) {
 }
 export async function getPosts(req, res) {
   try {
-    //const { page } = req.query;
+    const { page } = req.query;
+
+    if (page && page < 1) {
+      return res.status(200).send("Informe uma página válida");
+    }
     const { rows: posts } = await postRepository.getAllPosts();
 
+    const limit = 10;
+    const start = (page - 1) * limit;
+    const end = page * limit;
+
+    let arrayPosts = [];
+
+    if(posts.length <= 10){
+      arrayPosts = posts;
+    }else{
+      arrayPosts = posts.slice(start,end)
+    }
+
     const postsWithLikes = await Promise.all(
-      posts.map(async (post) => {
+      arrayPosts.map(async (post) => {
         const { rows: likesUsername } = await getUsernamesLikedPost(
           post.postId
         );

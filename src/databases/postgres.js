@@ -7,7 +7,7 @@ const { Pool } = pg;
 const databaseConfig = {
   connectionString: process.env.DATABASE_URL,
 };
-if (process.env.MODE === "PROD") {
+if (process.env.MODE === "DEV") {
   databaseConfig.ssl = {
     rejectUnauthorized: false,
   };
