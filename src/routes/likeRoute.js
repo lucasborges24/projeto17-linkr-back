@@ -9,6 +9,7 @@ likeRouter.post(
   "/like/:postId",
   validateHeaderSchema(tokenSchema),
   checkTokenBelongsSomeUser,
+  
   likePost
 );
 
