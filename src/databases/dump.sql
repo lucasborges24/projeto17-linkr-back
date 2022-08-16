@@ -1,7 +1,6 @@
 CREATE TABLE users (
 	"id" serial NOT NULL,
 	"username" TEXT NOT NULL UNIQUE,
-	"name" TEXT NOT NULL,
 	"email" TEXT NOT NULL UNIQUE,
 	"password" TEXT NOT NULL,
 	"picture" TEXT NOT NULL,
@@ -30,7 +29,7 @@ CREATE TABLE posts (
 
 CREATE TABLE "hashtagsPosts" (
 	"id" serial NOT NULL,
-	"postsId" integer NOT NULL,
+	"postId" integer NOT NULL,
 	"hashtagId" integer NOT NULL,
 	CONSTRAINT "hashtagsPosts_pk" PRIMARY KEY ("id")
 ) WITH (OIDS = FALSE);
