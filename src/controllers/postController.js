@@ -27,7 +27,6 @@ export async function editPost(req, res) {
       return res.status(401).send("Unauthorized, you are not the post owner");
     }
     await postRepository.deleteHashtagsPosts(id);
-    console.log(id);
     if (description) {
       const arr = description.split(" ");
       const hashtagsFilter = arr.filter((hashtag) => hashtag.startsWith("#"));
@@ -85,7 +84,6 @@ export async function getPosts(req, res) {
 
     res.status(200).send(postsWithLikes);
   } catch (error) {
-    console.log(error);
     res
       .status(500)
       .send(`Internal system error.\n More details: ${error.message}`);

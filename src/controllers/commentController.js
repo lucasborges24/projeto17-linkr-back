@@ -17,7 +17,6 @@ export async function postComment(req, res) {
 
     res.status(201).send("Comment posted successfully");
   } catch (err) {
-    console.log(err);
     res.sendStatus(500);
   }
 }
@@ -30,7 +29,6 @@ export async function getCommentsByPostId(req, res) {
 
     res.status(200).send(comments);
   } catch (err) {
-    console.log(err);
     res.sendStatus(500);
   }
 }
