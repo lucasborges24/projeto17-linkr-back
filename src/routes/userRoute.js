@@ -5,7 +5,7 @@ import {
   validateSchema,
 } from "../middlewares/schemaMiddleware.js";
 import { checkTokenBelongsSomeUser } from "../middlewares/tokenMiddleware.js";
-import { checkUserExists } from "../middlewares/userMiddleware.js";
+import { checkUserExists, validateParamsId } from "../middlewares/userMiddleware.js";
 import { tokenSchema } from "../schemas/authSchema.js";
 
 import { searchSchema } from "../schemas/searchSchema.js";
@@ -16,6 +16,7 @@ userRouter.get(
   "/user/:id",
   validateHeaderSchema(tokenSchema),
   checkTokenBelongsSomeUser,
+  validateParamsId,
   checkUserExists,
   getUserPosts
 );
