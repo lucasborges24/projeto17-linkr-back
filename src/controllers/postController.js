@@ -146,3 +146,16 @@ export async function createPost(req, res) {
       .send(`Internal system error.\n More details: ${error.message}`);
   }
 }
+
+export async function sharePost(req, res) {
+	try {
+		const {id} = req.params;
+		const { userId } = res.locals;
+		await postRepository.insertSharedPost(id, userId);
+		res.status(201).send("You shared this post");
+	} catch (error) {
+	  res
+		.status(500)
+		.send(`Internal system error.\n More details: ${error.message}`);
+	}
+  }

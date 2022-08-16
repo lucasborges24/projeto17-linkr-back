@@ -36,6 +36,7 @@ async function getAllPosts() {
       p."createdAt" AS "postCreatedAt",
       p."editedAt",
       COUNT("likesPosts"."id") as "likes",
+	  COUNT("sharedPosts"."id") as "shares",
       p."urlTitle",
       p."urlDescription",
       p."urlImage"
@@ -43,6 +44,7 @@ async function getAllPosts() {
       posts p
       JOIN users u ON p."writerId" = u."id"
       LEFT JOIN "likesPosts" ON "likesPosts"."postId" = p.id
+	  LEFT JOIN "sharedPosts" ON "sharedPosts"."postId" = p.id
     GROUP BY
       p."id",
       u."id"
@@ -106,6 +108,19 @@ async function insertHashtagPost(postId, hashtagId) {
   );
 }
 
+async function insertSharedPost(postId, userId) {
+	const query = `
+		INSERT INTO "sharedPosts"
+			("postId", "userId") 
+		VALUES 
+			($1, $2)
+	`;
+	return connection.query(
+		query,
+		[postId, userId]
+	);
+}
+
 export const postRepository = {
   getAllPosts,
   getUrlPost,
@@ -116,4 +131,5 @@ export const postRepository = {
   deletePostById,
   updatePost,
   deleteHashtagsPosts,
+  insertSharedPost,
 };
