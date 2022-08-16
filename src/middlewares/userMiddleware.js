@@ -13,9 +13,19 @@ export const checkUserExists = async (req, res, next) => {
 
     next();
   } catch (error) {
-    console.log(error);
     res
       .status(500)
       .send(`Internal system error.\n More details: ${error.message}`);
   }
+};
+
+export const validateParamsId = (req, res, next) => {
+  const id = Number(req.params.id)
+  const NotANumber = isNaN(id);
+  const isInteger = Number.isInteger(id);
+  if (NotANumber || !isInteger) {
+    return res.status(404).send("id is not a integer number!");
+  }
+
+  next();
 };
