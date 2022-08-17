@@ -15,8 +15,8 @@ async function getPostsByHashtag(hashtag) {
   posts."urlImage",
   posts."urlDescription",
   posts."urlTitle",
-  COUNT("likesPosts"."postId") AS likes,
-  COUNT(comments."postId") AS "commentsCount"
+  COUNT("likesPosts"."postId")::int AS likes,
+  COUNT(comments."postId")::int AS "commentsCount"
   FROM users
   JOIN posts ON posts."writerId" = users.id
   JOIN "hashtagsPosts" ON "hashtagsPosts"."postId" = posts.id

@@ -29,8 +29,8 @@ export const getUserPostsById = async (id) => {
     p."description",
     p."createdAt",
     p."editedAt",
-    COUNT("likesPosts"."id") as "likes",
-    COUNT(comments."postId") AS "commentsCount",
+    COUNT("likesPosts"."id")::int as "likes",
+    COUNT(comments."postId")::int AS "commentsCount",
     p."urlTitle",
     p."urlDescription",
     p."urlImage"
