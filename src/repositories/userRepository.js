@@ -47,11 +47,24 @@ export const getUserPostsById = async (id) => {
   return await connection.query(sql, [id]);
 };
 
-export const searchUsers = async (username) => {
+export const searchUsers = async (username, userId) => {
   const sql = `--sql
-  SELECT users.id, users."username", users.picture
-  FROM users
-  WHERE users."username" ILIKE $1;`;
+  SELECT
+	DISTINCT ON (users.id) users.id,
+	users."username",
+	users.picture,
+	CASE
+		WHEN follows."followerId" = $1 THEN 'true'
+		ELSE 'false'
+	END :: BOOLEAN AS "isFollowing"
+  FROM
+    users
+    LEFT JOIN follows ON follows."followedId" = users.id
+  WHERE
+    users."username" ILIKE $2
+  ORDER BY
+    users.id,
+    "isFollowing" desc`;
 
-  return await connection.query(sql, [`%${username}%`]);
+  return await connection.query(sql, [userId, `%${username}%`]);
 };
