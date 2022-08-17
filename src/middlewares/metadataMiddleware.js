@@ -9,7 +9,6 @@ async function metadataUrl(req, res, next) {
     res.locals.urlImage = metadata.image;
     next();
   } catch (err) {
-    console.log(err);
     return res.status(500).send(err);
   }
 }

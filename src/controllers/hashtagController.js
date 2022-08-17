@@ -25,7 +25,6 @@ export async function getPostsByHashtag(req, res) {
     );
     return res.status(200).send(postsWithLikes);
   } catch (err) {
-    console.log(err);
     res.sendStatus(500);
   }
 }
@@ -38,7 +37,6 @@ export async function getTopHashtags(req, res) {
     );
     return res.status(200).send(hashtags);
   } catch (err) {
-    console.log(err);
     res.sendStatus(500);
   }
 }

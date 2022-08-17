@@ -26,10 +26,8 @@ export async function editPost(req, res) {
     if (userId !== post[0].writerId) {
       return res.status(401).send("Unauthorized, you are not the post owner");
     }
-    await postRepository.deleteHashtagsPosts(id)
-    console.log(id);
+    await postRepository.deleteHashtagsPosts(id);
     if (description) {
-
       const arr = description.split(" ");
       const hashtagsFilter = arr.filter((hashtag) => hashtag.startsWith("#"));
       const hashtagsPosts = [];
