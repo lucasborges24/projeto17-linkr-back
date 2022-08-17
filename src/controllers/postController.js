@@ -154,8 +154,7 @@ export async function sharePost(req, res) {
 		await postRepository.insertSharedPost(id, userId);
 		res.status(201).send("You shared this post");
 	} catch (error) {
-	  res
-		.status(500)
+		res.status(500)
 		.send(`Internal system error.\n More details: ${error.message}`);
 	}
   }

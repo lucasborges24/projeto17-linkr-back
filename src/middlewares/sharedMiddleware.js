@@ -7,7 +7,7 @@ export const checkUserSharedPost = async (req, res, next) => {
 		const {rows: sharedPosts} = await sharedRepository.getSharedPostsByUserIdAndPostId(userId, postId);
 		if(sharedPosts.length > 0)
 			return res.status(409)
-			.send("User alredy shared by this post");
+			.send("User alredy shared this post");
 		next();
 	} catch (error) {
 		res.status(500)
