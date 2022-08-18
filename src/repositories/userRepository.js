@@ -21,15 +21,14 @@ export const getUserPostsById = async (id) => {
   const sql = `--sql
 
     SELECT
-    u."username",
-    u."picture",
     u."id" as "userId",
     p."id" as "postId",
     p."url",
     p."description",
     p."createdAt",
     p."editedAt",
-    COUNT("likesPosts"."id") as "likes",
+    COUNT("likesPosts"."id")::int as "likes",
+    COUNT(comments."postId")::int AS "commentsCount",
     p."urlTitle",
     p."urlDescription",
     p."urlImage"
@@ -37,13 +36,14 @@ export const getUserPostsById = async (id) => {
     posts p
     JOIN users u ON p."writerId" = u."id"
     LEFT JOIN "likesPosts" ON "likesPosts"."postId" = p.id
+    LEFT JOIN comments ON p.id = comments."postId"
   WHERE
     u.id = $1
   GROUP BY
     p."id",
     u."id"
   ORDER BY
-    "createdAt" DESC
+    p.id DESC
   `;
 
   return await connection.query(sql, [id]);

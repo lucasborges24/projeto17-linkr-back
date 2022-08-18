@@ -1,5 +1,5 @@
 import { hashtagReposity } from "../repositories/index.js";
-
+import { getUsernamesLikedPost } from "../repositories/likesRepository.js";
 export async function getPostsByHashtag(req, res) {
   const { hashtag } = req.params;
   try {
@@ -8,12 +8,23 @@ export async function getPostsByHashtag(req, res) {
     if (!validateHashtag) {
       return res
         .status(404)
-        .send(`Não foi encontrado posts com a tag referente a ${hashtag}`);
+        .send(`It was not possible find posts with #${hashtag}`);
     }
     const { rows: result } = await hashtagReposity.getPostsByHashtag(hashtag);
-    return res.status(200).send(result);
+    const postsWithLikes = await Promise.all(
+      result.map(async (post) => {
+        const { rows: likesUsername } = await getUsernamesLikedPost(
+          post.postId
+        );
+
+        return {
+          ...post,
+          likesUsername: likesUsername.map(({ username }) => username),
+        };
+      })
+    );
+    return res.status(200).send(postsWithLikes);
   } catch (err) {
-    console.log(err);
     res.sendStatus(500);
   }
 }
@@ -26,7 +37,6 @@ export async function getTopHashtags(req, res) {
     );
     return res.status(200).send(hashtags);
   } catch (err) {
-    console.log(err);
     res.sendStatus(500);
   }
 }

@@ -12,15 +12,20 @@ async function getPostsByHashtag(hashtag) {
   users.id AS "writerId",
   users.username, 
   users.picture,
-  COUNT("likesPosts"."postId") as likes
+  posts."urlImage",
+  posts."urlDescription",
+  posts."urlTitle",
+  COUNT("likesPosts"."postId")::int AS likes,
+  COUNT(comments."postId")::int AS "commentsCount"
   FROM users
   JOIN posts ON posts."writerId" = users.id
   JOIN "hashtagsPosts" ON "hashtagsPosts"."postId" = posts.id
   JOIN hashtags ON hashtags.id = "hashtagsPosts"."hashtagId"
   LEFT JOIN "likesPosts" ON posts.id = "likesPosts"."postId"
+  LEFT JOIN comments ON posts.id = comments."postId"
   WHERE hashtags.name=$1
   GROUP BY posts.id, users.id
-  ORDER BY posts."createdAt" DESC
+  ORDER BY posts.id DESC
   LIMIT 20
   `,
     [hashtag]
