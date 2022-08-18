@@ -35,7 +35,8 @@ async function getAllPosts() {
       p."description",
       p."createdAt" AS "postCreatedAt",
       p."editedAt",
-      COUNT("likesPosts"."id") as "likes",
+      COUNT("likesPosts"."id")::int as "likes",
+      COUNT(comments."postId")::int AS "commentsCount",
       p."urlTitle",
       p."urlDescription",
       p."urlImage"
@@ -43,6 +44,7 @@ async function getAllPosts() {
       posts p
       JOIN users u ON p."writerId" = u."id"
       LEFT JOIN "likesPosts" ON "likesPosts"."postId" = p.id
+      LEFT JOIN comments ON p.id = comments."postId"
     GROUP BY
       p."id",
       u."id"

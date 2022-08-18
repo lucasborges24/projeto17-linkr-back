@@ -28,6 +28,7 @@ export const getUserPostsById = async (id) => {
     p."createdAt",
     p."editedAt",
     COUNT("likesPosts"."id")::int as "likes",
+    COUNT(comments."postId")::int AS "commentsCount",
     p."urlTitle",
     p."urlDescription",
     p."urlImage"
@@ -35,6 +36,7 @@ export const getUserPostsById = async (id) => {
     posts p
     JOIN users u ON p."writerId" = u."id"
     LEFT JOIN "likesPosts" ON "likesPosts"."postId" = p.id
+    LEFT JOIN comments ON p.id = comments."postId"
   WHERE
     u.id = $1
   GROUP BY
