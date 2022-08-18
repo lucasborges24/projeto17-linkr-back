@@ -24,7 +24,7 @@ async function updatePost(description, id) {
     [description, id]
   );
 }
-async function getAllPosts() {
+async function getAllPosts(userId) {
   return connection.query(
     `SELECT
       u."username",
@@ -45,11 +45,13 @@ async function getAllPosts() {
       JOIN users u ON p."writerId" = u."id"
       LEFT JOIN "likesPosts" ON "likesPosts"."postId" = p.id
       LEFT JOIN comments ON p.id = comments."postId"
+      JOIN follows f ON f."followedId" = p."writerId" AND f."followerId" = $1
     GROUP BY
       p."id",
       u."id"
     ORDER BY
-      p.id DESC LIMIT 20`
+      p.id DESC LIMIT 20`,
+    [userId]
   );
 }
 

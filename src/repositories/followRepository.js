@@ -13,6 +13,18 @@ export const getFollowerByIds = (followerId, followedId) => {
   return connection.query(sql, [followerId, followedId]);
 };
 
+export const getFollowersCount = (followerId) => {
+  const sql = `--sql
+    SELECT
+      COUNT(follows."followedId")
+    FROM
+      follows
+    WHERE
+      follows."followerId" = $1;
+  `;
+  return connection.query(sql, [followerId]);
+};
+
 export const insertFollow = (followerId, followedId) => {
   const sql = `--sql
     INSERT INTO

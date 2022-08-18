@@ -65,9 +65,10 @@ export async function editPost(req, res) {
   }
 }
 export async function getPosts(req, res) {
+  const { userId } = res.locals;
   try {
     //const { page } = req.query;
-    const { rows: posts } = await postRepository.getAllPosts();
+    const { rows: posts } = await postRepository.getAllPosts(userId);
 
     const postsWithLikes = await Promise.all(
       posts.map(async (post) => {
