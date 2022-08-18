@@ -66,22 +66,29 @@ export async function editPost(req, res) {
 export async function getPosts(req, res) {
   try {
     const { page } = req.query;
+    const pageNumber = Number(page);
 
-    if (page && page < 1) {
-      return res.status(200).send("Informe uma página válida");
+    if (!pageNumber || pageNumber < 1) {
+      return res.status(401).send("Informe uma página válida");
     }
     const { rows: posts } = await postRepository.getAllPosts();
 
     const limit = 10;
-    const start = (page - 1) * limit;
-    const end = page * limit;
+    const start = (pageNumber - 1) * limit;
+    const end = pageNumber * limit;
 
     let arrayPosts = [];
+    let hasMorePosts = true;
 
-    if(posts.length <= 10){
-      arrayPosts = posts;
-    }else{
-      arrayPosts = posts.slice(start,end)
+    if (posts.length <= 10) {
+      arrayPosts = [...posts];
+      hasMorePosts = false;
+    } else {
+      arrayPosts = posts.slice(start, end);
+
+      if (arrayPosts.length < 10) {
+        hasMorePosts = false;
+      }
     }
 
     const postsWithLikes = await Promise.all(
@@ -97,7 +104,12 @@ export async function getPosts(req, res) {
       })
     );
 
-    res.status(200).send(postsWithLikes);
+    const response = {
+      posts: postsWithLikes,
+      hasMorePosts,
+    };
+
+    res.status(200).send(response);
   } catch (error) {
     res
       .status(500)
