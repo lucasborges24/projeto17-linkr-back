@@ -36,20 +36,50 @@ async function getAllPosts() {
       p."createdAt" AS "postCreatedAt",
       p."editedAt",
       COUNT("likesPosts"."id")::int as "likes",
+      COUNT("sharedPosts"."id")::int as "shares",
       COUNT(comments."postId")::int AS "commentsCount",
       p."urlTitle",
       p."urlDescription",
-      p."urlImage"
-    FROM
-      posts p
+      p."urlImage",
+      p."sharedBy"
+    FROM (
+			SELECT *, NULL AS "sharedBy" FROM posts
+			UNION ALL (
+				SELECT b.id,
+					b."writerId",
+					b.url,
+					b.description,
+					a."createdAt",
+					b."editedAt",
+					b."urlImage",
+					b."urlDescription",
+					b."urlTitle",
+					c.username AS "sharedBy"
+				FROM "sharedPosts" "a"
+				JOIN posts b
+				ON b.id = a."postId"
+				JOIN users "c"
+				ON a."userId" = c.id
+			)
+			ORDER BY "createdAt" DESC
+     ) p
       JOIN users u ON p."writerId" = u."id"
       LEFT JOIN "likesPosts" ON "likesPosts"."postId" = p.id
+      LEFT JOIN "sharedPosts" ON "sharedPosts"."postId" = p.id
       LEFT JOIN comments ON p.id = comments."postId"
     GROUP BY
       p."id",
+      p."url",
+			p."description",
+			p."createdAt",
+			p."editedAt",
+			p."urlTitle",
+			p."urlDescription",
+			p."urlImage",
+			p."sharedBy",
       u."id"
     ORDER BY
-      p.id DESC`
+      p."createdAt" DESC `
   );
 }
 
@@ -108,6 +138,19 @@ async function insertHashtagPost(postId, hashtagId) {
   );
 }
 
+async function insertSharedPost(postId, userId) {
+	const query = `
+		INSERT INTO "sharedPosts"
+			("postId", "userId") 
+		VALUES 
+			($1, $2)
+	`;
+	return connection.query(
+		query,
+		[postId, userId]
+	);
+}
+
 export const postRepository = {
   getAllPosts,
   getUrlPost,
@@ -118,4 +161,5 @@ export const postRepository = {
   deletePostById,
   updatePost,
   deleteHashtagsPosts,
+  insertSharedPost,
 };
