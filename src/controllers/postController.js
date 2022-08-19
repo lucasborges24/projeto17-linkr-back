@@ -1,3 +1,4 @@
+import { getFollowersCount } from "../repositories/followRepository.js";
 import { postRepository, hashtagReposity, sharedRepository } from "../repositories/index.js";
 import { getUsernamesLikedPost } from "../repositories/likesRepository.js";
 
@@ -65,23 +66,19 @@ export async function editPost(req, res) {
   }
 }
 export async function getPosts(req, res) {
+  const { userId } = res.locals;
   try {
     const { page, postId } = req.query;
 
-    console.log(postId)
-
     const { rows: postCheck } = await postRepository.getNewPosts(postId);
-
-    console.log(postCheck.length)
 
     const pageNumber = Number(page);
 
     if (!pageNumber || pageNumber < 1) {
       return res.status(401).send("Send a valid page number");
     }
-    const { rows: posts } = await postRepository.getAllPosts();
-
-    const LIMIT = 3;
+    const { rows: posts } = await postRepository.getAllPosts(userId);
+    const LIMIT = 10;
     const start = (pageNumber - 1) * LIMIT;
     const end = pageNumber * LIMIT;
 
@@ -98,7 +95,6 @@ export async function getPosts(req, res) {
         hasMorePosts = false;
       }
     }
-
     const postsWithLikes = await Promise.all(
       arrayPosts.map(async (post) => {
         const { rows: likesUsername } = await getUsernamesLikedPost(
@@ -112,11 +108,14 @@ export async function getPosts(req, res) {
       })
     );
 
+    const { rows: followSomeoneCount } = await getFollowersCount(userId);
+    const followSomeone = followSomeoneFunction(followSomeoneCount[0].count);
+
     const response = {
       posts: postsWithLikes,
       hasMorePosts,
+      followSomeone,
     };
-
     res.status(200).send(response);
 
   } catch (error) {
@@ -125,6 +124,14 @@ export async function getPosts(req, res) {
       .send(`Internal system error.\n More details: ${error.message}`);
   }
 }
+
+const followSomeoneFunction = (followeds) => {
+  if (followeds === 0) {
+    return false;
+  } else {
+    return true;
+  }
+};
 
 export async function createPost(req, res) {
   try {

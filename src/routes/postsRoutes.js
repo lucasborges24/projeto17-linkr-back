@@ -17,7 +17,12 @@ import publishSchema from "../schemas/postSchema.js";
 
 const postRouter = Router();
 
-postRouter.get("/timeline", getPosts);
+postRouter.get(
+  "/timeline",
+  validateHeaderSchema(tokenSchema),
+  checkTokenBelongsSomeUser,
+  getPosts
+);
 postRouter.get("/timeline/:postId", getNewPostsTimeline);
 postRouter.post(
   "/posts",

@@ -63,7 +63,6 @@ export const getUserPosts = async (req, res) => {
     };
     return res.send(postObject);
   } catch (error) {
-	console.log(error)
     res
       .status(500)
       .send(`Internal system error.\n More details: ${error.message}`);
@@ -80,10 +79,20 @@ const isFollowed = (FollowParam) => {
 
 export const getUsers = async (req, res) => {
   const { body } = res.locals;
+  const { userId } = res.locals;
+
   const { username } = body;
 
   try {
-    const { rows: users } = await searchUsers(username);
+    const { rows: users } = await searchUsers(username, userId);
+
+    users.sort((a, b) => {
+      if (a.isFollowing === true) {
+        return -1;
+      } else {
+        return 1;
+      }
+    });
 
     return res.send(users);
   } catch (error) {

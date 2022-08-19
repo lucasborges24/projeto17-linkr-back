@@ -24,7 +24,7 @@ async function updatePost(description, id) {
     [description, id]
   );
 }
-async function getAllPosts() {
+async function getAllPosts(userId) {
   return connection.query(
     `SELECT
       u."username",
@@ -67,6 +67,7 @@ async function getAllPosts() {
       LEFT JOIN "likesPosts" ON "likesPosts"."postId" = p.id
       LEFT JOIN "sharedPosts" ON "sharedPosts"."postId" = p.id
       LEFT JOIN comments ON p.id = comments."postId"
+      JOIN follows f ON f."followedId" = p."writerId" AND (f."followerId" = $1 OR p."writerId" = $1)
     GROUP BY
       p."id",
       p."url",
@@ -79,7 +80,8 @@ async function getAllPosts() {
 			p."sharedBy",
       u."id"
     ORDER BY
-      p."createdAt" DESC `
+    p."createdAt" DESC`,
+    [userId]
   );
 }
 
