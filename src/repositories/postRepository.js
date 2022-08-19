@@ -138,17 +138,44 @@ async function insertHashtagPost(postId, hashtagId) {
   );
 }
 
+async function getNewPosts(postId) {
+  return connection.query(
+    `SELECT
+    u."username",
+    u."picture",
+    u."id" as "userId",
+    p."id" as "postId",
+    p."url",
+    p."description",
+    p."createdAt" AS "postCreatedAt",
+    p."editedAt",
+    COUNT("likesPosts"."id")::int as "likes",
+    COUNT(comments."postId")::int AS "commentsCount",
+    p."urlTitle",
+    p."urlDescription",
+    p."urlImage"
+  FROM
+    posts p
+    JOIN users u ON p."writerId" = u."id"
+    LEFT JOIN "likesPosts" ON "likesPosts"."postId" = p.id
+    LEFT JOIN comments ON p.id = comments."postId"
+WHERE p."id" > $1
+  GROUP BY
+    p."id",
+    u."id"
+  ORDER BY
+    p."id" DESC`,
+    [postId]
+  );
+}
 async function insertSharedPost(postId, userId) {
-	const query = `
+  const query = `
 		INSERT INTO "sharedPosts"
 			("postId", "userId") 
 		VALUES 
 			($1, $2)
 	`;
-	return connection.query(
-		query,
-		[postId, userId]
-	);
+  return connection.query(query, [postId, userId]);
 }
 
 export const postRepository = {
@@ -161,5 +188,6 @@ export const postRepository = {
   deletePostById,
   updatePost,
   deleteHashtagsPosts,
+  getNewPosts,
   insertSharedPost,
 };

@@ -1,6 +1,7 @@
 import { Router } from "express";
 import {
   createPost,
+  getNewPostsTimeline,
   getPosts,
   sharePost,
 } from "../controllers/postController.js";
@@ -17,6 +18,7 @@ import publishSchema from "../schemas/postSchema.js";
 const postRouter = Router();
 
 postRouter.get("/timeline", getPosts);
+postRouter.get("/timeline/:postId", getNewPostsTimeline);
 postRouter.post(
   "/posts",
   validateHeaderSchema(tokenSchema),

@@ -66,7 +66,14 @@ export async function editPost(req, res) {
 }
 export async function getPosts(req, res) {
   try {
-    const { page } = req.query;
+    const { page, postId } = req.query;
+
+    console.log(postId)
+
+    const { rows: postCheck } = await postRepository.getNewPosts(postId);
+
+    console.log(postCheck.length)
+
     const pageNumber = Number(page);
 
     if (!pageNumber || pageNumber < 1) {
@@ -74,20 +81,20 @@ export async function getPosts(req, res) {
     }
     const { rows: posts } = await postRepository.getAllPosts();
 
-    const LIMIT = 10;
+    const LIMIT = 3;
     const start = (pageNumber - 1) * LIMIT;
     const end = pageNumber * LIMIT;
 
     let arrayPosts = [];
     let hasMorePosts = true;
 
-    if (posts.length <= 10) {
+    if (posts.length <= LIMIT) {
       arrayPosts = [...posts];
       hasMorePosts = false;
     } else {
-      arrayPosts = posts.slice(start, end);
+      arrayPosts = posts.slice(start + postCheck.length, end + postCheck.length);
 
-      if (arrayPosts.length < 10) {
+      if (arrayPosts.length < LIMIT) {
         hasMorePosts = false;
       }
     }
@@ -174,6 +181,51 @@ export async function createPost(req, res) {
   }
 }
 
+export async function getNewPostsTimeline(req, res) {
+  try {
+    const { postId } = req.params;
+
+    const { rows: posts } = await postRepository.getNewPosts(postId);
+
+    let arrayPosts = [];
+    let hasMorePosts = true;
+
+    if (posts.length <= 10) {
+      arrayPosts = [...posts];
+      hasMorePosts = false;
+    } else {
+      arrayPosts = posts.slice(start, end);
+
+      if (arrayPosts.length < 10) {
+        hasMorePosts = false;
+      }
+    }
+
+    const postsWithLikes = await Promise.all(
+      arrayPosts.map(async (post) => {
+        const { rows: likesUsername } = await getUsernamesLikedPost(
+          post.postId
+        );
+
+        return {
+          ...post,
+          likesUsername: likesUsername.map(({ username }) => username),
+        };
+      })
+    );
+
+    const response = {
+      posts: postsWithLikes,
+      hasMorePosts,
+    };
+
+    res.status(200).send(response);
+  } catch (error) {
+    res
+      .status(500)
+      .send(`Internal system error.\n More details: ${error.message}`);
+  }
+}
 export async function sharePost(req, res) {
 	try {
 		const {id} = req.params;
