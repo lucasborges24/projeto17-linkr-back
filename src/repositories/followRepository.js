@@ -16,7 +16,7 @@ export const getFollowerByIds = (followerId, followedId) => {
 export const getFollowersCount = (followerId) => {
   const sql = `--sql
     SELECT
-      COUNT(follows."followedId")
+      COUNT(follows."followedId")::int
     FROM
       follows
     WHERE
