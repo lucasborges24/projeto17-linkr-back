@@ -12,7 +12,7 @@ export const insertComment = async (writerId, postId, comment) => {
   );
 };
 
-export const getPostComments = async (postId) => {
+export const getPostComments = async (postId, userId) => {
   return await connection.query(
     `--sql
     SELECT 
@@ -20,13 +20,18 @@ export const getPostComments = async (postId) => {
       users.picture,
       users.id AS "commentWriterId",
       comments.comment,
-      comments.id
+      comments.id,
+      CASE
+        WHEN follows."followerId" = $2  THEN 'true'
+        ELSE 'false'
+    END :: BOOLEAN AS "isFollowing"
     FROM 
-      comments
-      JOIN users ON users.id = comments."writerId"
+      users
+      LEFT JOIN follows ON follows."followedId" = users.id
+      JOIN comments ON comments."writerId"= users.id
     WHERE
       comments."postId" = $1
     `,
-    [postId]
+    [postId, userId]
   );
 };
