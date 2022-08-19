@@ -140,7 +140,7 @@ async function insertHashtagPost(postId, hashtagId) {
   );
 }
 
-async function getNewPosts(postId) {
+async function getNewPosts(postId, userId) {
   return connection.query(
     `SELECT
     u."username",
@@ -161,13 +161,14 @@ async function getNewPosts(postId) {
     JOIN users u ON p."writerId" = u."id"
     LEFT JOIN "likesPosts" ON "likesPosts"."postId" = p.id
     LEFT JOIN comments ON p.id = comments."postId"
+    JOIN follows f ON f."followedId" = p."writerId" AND (f."followerId" = $2 OR p."writerId" = $2)
 WHERE p."id" > $1
   GROUP BY
     p."id",
     u."id"
   ORDER BY
     p."id" DESC`,
-    [postId]
+    [postId, userId]
   );
 }
 async function insertSharedPost(postId, userId) {

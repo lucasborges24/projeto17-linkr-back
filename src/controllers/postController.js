@@ -70,7 +70,7 @@ export async function getPosts(req, res) {
   try {
     const { page, postId } = req.query;
 
-    const { rows: postCheck } = await postRepository.getNewPosts(postId);
+    const { rows: postCheck } = await postRepository.getNewPosts(postId, userId);
 
     const pageNumber = Number(page);
 
@@ -192,7 +192,7 @@ export async function getNewPostsTimeline(req, res) {
   try {
     const { postId } = req.params;
 
-    const { rows: posts } = await postRepository.getNewPosts(postId);
+    const { rows: posts } = await postRepository.getNewPosts(postId, userId);
 
     let arrayPosts = [];
     let hasMorePosts = true;
