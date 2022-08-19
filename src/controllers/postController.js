@@ -1,4 +1,4 @@
-import { postRepository, hashtagReposity } from "../repositories/index.js";
+import { postRepository, hashtagReposity, sharedRepository } from "../repositories/index.js";
 import { getUsernamesLikedPost } from "../repositories/likesRepository.js";
 
 export async function deletePost(req, res) {
@@ -118,6 +118,7 @@ export async function getPosts(req, res) {
     };
 
     res.status(200).send(response);
+
   } catch (error) {
     res
       .status(500)
@@ -225,3 +226,14 @@ export async function getNewPostsTimeline(req, res) {
       .send(`Internal system error.\n More details: ${error.message}`);
   }
 }
+export async function sharePost(req, res) {
+	try {
+		const {id} = req.params;
+		const { userId } = res.locals;
+		await postRepository.insertSharedPost(id, userId);
+		res.status(201).send("You shared this post");
+	} catch (error) {
+		res.status(500)
+		.send(`Internal system error.\n More details: ${error.message}`);
+	}
+  }
