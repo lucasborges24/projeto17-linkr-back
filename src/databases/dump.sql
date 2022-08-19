@@ -74,7 +74,7 @@ ADD
 ALTER TABLE
 	"hashtagsPosts"
 ADD
-	CONSTRAINT "hashtagsPosts_fk0" FOREIGN KEY ("postsId") REFERENCES "posts"("id") ON DELETE CASCADE;
+	CONSTRAINT "hashtagsPosts_fk0" FOREIGN KEY ("postId") REFERENCES "posts"("id") ON DELETE CASCADE;
 
 ALTER TABLE
 	"hashtagsPosts"

@@ -21,8 +21,6 @@ export const getUserPostsById = async (id) => {
   const sql = `--sql
 
     SELECT
-    u."username",
-    u."picture",
     u."id" as "userId",
     p."id" as "postId",
     p."url",
