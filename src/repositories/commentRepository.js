@@ -16,11 +16,11 @@ export const getPostComments = async (postId, userId) => {
   return await connection.query(
     `--sql
     SELECT 
+      DISTINCT ON (comments.id) comments.id,
       users.username,
       users.picture,
       users.id AS "commentWriterId",
       comments.comment,
-      comments.id,
       CASE
         WHEN follows."followerId" = $2  THEN 'true'
         ELSE 'false'
