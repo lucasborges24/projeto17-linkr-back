@@ -7,6 +7,7 @@ import { userRouter } from "./userRoute.js";
 
 import hashtagRouter from "./hashtagRoute.js";
 import { likeRouter } from "./likeRoute.js";
+import followRouter from "./followRoute.js";
 import { commentRouter } from "./commentRoute.js";
 
 const router = Router();
@@ -17,6 +18,7 @@ router.use(hashtagRouter);
 router.use(postRoute);
 router.use(postRouter);
 router.use(likeRouter);
+router.use(followRouter)
 router.use(commentRouter);
 
 export default router;
