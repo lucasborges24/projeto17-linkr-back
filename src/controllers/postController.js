@@ -179,3 +179,49 @@ export async function createPost(req, res) {
       .send(`Internal system error.\n More details: ${error.message}`);
   }
 }
+
+export async function getNewPostsTimeline(req, res) {
+  try {
+    const { postId } = req.params;
+
+    const { rows: posts } = await postRepository.getNewPosts(postId);
+
+    let arrayPosts = [];
+    let hasMorePosts = true;
+
+    if (posts.length <= 10) {
+      arrayPosts = [...posts];
+      hasMorePosts = false;
+    } else {
+      arrayPosts = posts.slice(start, end);
+
+      if (arrayPosts.length < 10) {
+        hasMorePosts = false;
+      }
+    }
+
+    const postsWithLikes = await Promise.all(
+      arrayPosts.map(async (post) => {
+        const { rows: likesUsername } = await getUsernamesLikedPost(
+          post.postId
+        );
+
+        return {
+          ...post,
+          likesUsername: likesUsername.map(({ username }) => username),
+        };
+      })
+    );
+
+    const response = {
+      posts: postsWithLikes,
+      hasMorePosts,
+    };
+
+    res.status(200).send(response);
+  } catch (error) {
+    res
+      .status(500)
+      .send(`Internal system error.\n More details: ${error.message}`);
+  }
+}
