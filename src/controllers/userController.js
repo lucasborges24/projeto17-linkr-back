@@ -8,14 +8,40 @@ import {
 
 export const getUserPosts = async (req, res) => {
   const { user } = res.locals;
+  const { page } = req.query;
   const { userId } = res.locals;
+
+  const pageNumber = Number(page);
+
+  if (!pageNumber || pageNumber < 1) {
+    return res.status(401).send("send a valid page number");
+  }
+
   try {
     const { rows: userInfo } = await getUser(user.id);
     const { rows: posts } = await getUserPostsById(user.id);
     const { rowCount } = await getFollowerByIds(userId, user.id);
 
+    const LIMIT = 10;
+    const start = (pageNumber - 1) * LIMIT;
+    const end = pageNumber * LIMIT;
+
+    let arrayPosts = [];
+    let hasMorePosts = true;
+
+    if (posts.length <= 10) {
+      arrayPosts = [...posts];
+      hasMorePosts = false;
+    } else {
+      arrayPosts = posts.slice(start, end);
+
+      if (arrayPosts.length < 10) {
+        hasMorePosts = false;
+      }
+    }
+
     const postsWithLikes = await Promise.all(
-      posts.map(async (post) => {
+      arrayPosts.map(async (post) => {
         const { rows: likesUsername } = await getUsernamesLikedPost(
           post.postId
         );
@@ -32,6 +58,7 @@ export const getUserPosts = async (req, res) => {
       username: userInfo[0].username,
       picture: userInfo[0].picture,
       isFollowed: isFollowed(rowCount),
+      hasMorePosts,
       postsInfo: postsWithLikes,
     };
     return res.send(postObject);
