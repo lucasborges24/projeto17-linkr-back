@@ -1,4 +1,4 @@
-import { postRepository, hashtagReposity } from "../repositories/index.js";
+import { postRepository, hashtagReposity, sharedRepository } from "../repositories/index.js";
 import { getUsernamesLikedPost } from "../repositories/likesRepository.js";
 
 export async function deletePost(req, res) {
@@ -83,7 +83,6 @@ export async function getPosts(req, res) {
         };
       })
     );
-
     res.status(200).send(postsWithLikes);
   } catch (error) {
     res

@@ -25,32 +25,62 @@ async function updatePost(description, id) {
   );
 }
 async function getAllPosts() {
-  return connection.query(
-    `SELECT
-      u."username",
-      u."picture",
-      u."id" as "userId",
-      p."id" as "postId",
-      p."url",
-      p."description",
-      p."createdAt" AS "postCreatedAt",
-      p."editedAt",
-      COUNT("likesPosts"."id") as "likes",
-	  COUNT("sharedPosts"."id") as "shares",
-      p."urlTitle",
-      p."urlDescription",
-      p."urlImage"
-    FROM
-      posts p
-      JOIN users u ON p."writerId" = u."id"
-      LEFT JOIN "likesPosts" ON "likesPosts"."postId" = p.id
-	  LEFT JOIN "sharedPosts" ON "sharedPosts"."postId" = p.id
-    GROUP BY
-      p."id",
-      u."id"
-    ORDER BY
-      p.id DESC LIMIT 20`
-  );
+	const query = `
+		SELECT
+			u."username",
+			u."picture",
+			u."id" as "userId",
+			p."id" as "postId",
+			p."url",
+			p."description",
+			p."createdAt" AS "postCreatedAt",
+			p."editedAt",
+			COUNT("likesPosts"."id") as "likes",
+			COUNT("sharedPosts"."id") as "shares",
+			p."urlTitle",
+			p."urlDescription",
+			p."urlImage",
+			p."sharedBy"
+		FROM (
+			SELECT *, NULL AS "sharedBy" FROM posts
+			UNION ALL (
+				SELECT b.id,
+					b."writerId",
+					b.url,
+					b.description,
+					a."createdAt",
+					b."editedAt",
+					b."urlImage",
+					b."urlDescription",
+					b."urlTitle",
+					c.username AS "sharedBy"
+				FROM "sharedPosts" "a"
+				JOIN posts b
+				ON b.id = a."postId"
+				JOIN users "c"
+				ON a."userId" = c.id
+			)
+			ORDER BY "createdAt" DESC
+		) p
+		JOIN users u ON p."writerId" = u."id"
+		LEFT JOIN "likesPosts" ON "likesPosts"."postId" = p.id
+		LEFT JOIN "sharedPosts" ON "sharedPosts"."postId" = p.id
+		GROUP BY
+			p."id",
+			p."url",
+			p."description",
+			p."createdAt",
+			p."editedAt",
+			p."urlTitle",
+			p."urlDescription",
+			p."urlImage",
+			p."sharedBy",
+			u."id"
+		ORDER BY
+			p."createdAt" DESC 
+		LIMIT 20
+	`;
+  return connection.query(query);
 }
 
 async function deleteHashtagsPosts(postId) {
