@@ -45,12 +45,13 @@ async function getAllPosts(userId) {
       JOIN users u ON p."writerId" = u."id"
       LEFT JOIN "likesPosts" ON "likesPosts"."postId" = p.id
       LEFT JOIN comments ON p.id = comments."postId"
-      JOIN follows f ON f."followedId" = p."writerId" AND f."followerId" = $1
+      JOIN follows f ON f."followedId" = p."writerId" AND (f."followerId" = $1 OR p."writerId" = $1)
     GROUP BY
       p."id",
       u."id"
     ORDER BY
-      p.id DESC`
+      p.id DESC`,
+      [userId]
   );
 }
 
