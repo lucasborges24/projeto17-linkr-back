@@ -67,11 +67,34 @@ export async function editPost(req, res) {
 export async function getPosts(req, res) {
   const { userId } = res.locals;
   try {
-    //const { page } = req.query;
+    const { page } = req.query;
+    const pageNumber = Number(page);
+
+    if (!pageNumber || pageNumber < 1) {
+      return res.status(401).send("Send a valid page number");
+    }
     const { rows: posts } = await postRepository.getAllPosts(userId);
 
+    const LIMIT = 10;
+    const start = (pageNumber - 1) * LIMIT;
+    const end = pageNumber * LIMIT;
+
+    let arrayPosts = [];
+    let hasMorePosts = true;
+
+    if (posts.length <= 10) {
+      arrayPosts = [...posts];
+      hasMorePosts = false;
+    } else {
+      arrayPosts = posts.slice(start, end);
+
+      if (arrayPosts.length < 10) {
+        hasMorePosts = false;
+      }
+    }
+
     const postsWithLikes = await Promise.all(
-      posts.map(async (post) => {
+      arrayPosts.map(async (post) => {
         const { rows: likesUsername } = await getUsernamesLikedPost(
           post.postId
         );
@@ -83,7 +106,12 @@ export async function getPosts(req, res) {
       })
     );
 
-    res.status(200).send(postsWithLikes);
+    const response = {
+      posts: postsWithLikes,
+      hasMorePosts,
+    };
+
+    res.status(200).send(response);
   } catch (error) {
     res
       .status(500)

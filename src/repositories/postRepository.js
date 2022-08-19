@@ -50,8 +50,7 @@ async function getAllPosts(userId) {
       p."id",
       u."id"
     ORDER BY
-      p.id DESC LIMIT 20`,
-    [userId]
+      p.id DESC`
   );
 }
 
