@@ -25,23 +25,24 @@ async function updatePost(description, id) {
   );
 }
 async function getAllPosts() {
-	const query = `
-		SELECT
-			u."username",
-			u."picture",
-			u."id" as "userId",
-			p."id" as "postId",
-			p."url",
-			p."description",
-			p."createdAt" AS "postCreatedAt",
-			p."editedAt",
-			COUNT("likesPosts"."id") as "likes",
-			COUNT("sharedPosts"."id") as "shares",
-			p."urlTitle",
-			p."urlDescription",
-			p."urlImage",
-			p."sharedBy"
-		FROM (
+  return connection.query(
+    `SELECT
+      u."username",
+      u."picture",
+      u."id" as "userId",
+      p."id" as "postId",
+      p."url",
+      p."description",
+      p."createdAt" AS "postCreatedAt",
+      p."editedAt",
+      COUNT("likesPosts"."id")::int as "likes",
+      COUNT("sharedPosts"."id")::int as "shares",
+      COUNT(comments."postId")::int AS "commentsCount",
+      p."urlTitle",
+      p."urlDescription",
+      p."urlImage",
+      p."sharedBy"
+    FROM (
 			SELECT *, NULL AS "sharedBy" FROM posts
 			UNION ALL (
 				SELECT b.id,
@@ -61,13 +62,14 @@ async function getAllPosts() {
 				ON a."userId" = c.id
 			)
 			ORDER BY "createdAt" DESC
-		) p
-		JOIN users u ON p."writerId" = u."id"
-		LEFT JOIN "likesPosts" ON "likesPosts"."postId" = p.id
-		LEFT JOIN "sharedPosts" ON "sharedPosts"."postId" = p.id
-		GROUP BY
-			p."id",
-			p."url",
+     ) p
+      JOIN users u ON p."writerId" = u."id"
+      LEFT JOIN "likesPosts" ON "likesPosts"."postId" = p.id
+      LEFT JOIN "sharedPosts" ON "sharedPosts"."postId" = p.id
+      LEFT JOIN comments ON p.id = comments."postId"
+    GROUP BY
+      p."id",
+      p."url",
 			p."description",
 			p."createdAt",
 			p."editedAt",
@@ -75,12 +77,10 @@ async function getAllPosts() {
 			p."urlDescription",
 			p."urlImage",
 			p."sharedBy",
-			u."id"
-		ORDER BY
-			p."createdAt" DESC 
-		LIMIT 20
-	`;
-  return connection.query(query);
+      u."id"
+    ORDER BY
+      p."createdAt" DESC `
+  );
 }
 
 async function deleteHashtagsPosts(postId) {
