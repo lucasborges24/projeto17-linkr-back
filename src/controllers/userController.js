@@ -63,6 +63,7 @@ export const getUserPosts = async (req, res) => {
     };
     return res.send(postObject);
   } catch (error) {
+	console.log(error)
     res
       .status(500)
       .send(`Internal system error.\n More details: ${error.message}`);

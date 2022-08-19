@@ -28,19 +28,47 @@ export const getUserPostsById = async (id) => {
     p."createdAt",
     p."editedAt",
     COUNT("likesPosts"."id")::int as "likes",
+    COUNT("sharedPosts"."id")::int as "shares",
     COUNT(comments."postId")::int AS "commentsCount",
     p."urlTitle",
     p."urlDescription",
-    p."urlImage"
+    p."urlImage",
+	p."sharedBy"
   FROM
-    posts p
+    (SELECT *, NULL AS "sharedBy" FROM posts WHERE "writerId" = $1
+		UNION ALL (
+			SELECT b.id,
+				b."writerId",
+				b.url,
+				b.description,
+				a."createdAt",
+				b."editedAt",
+				b."urlImage",
+				b."urlDescription",
+				b."urlTitle",
+				c.username AS "sharedBy"
+			FROM "sharedPosts" "a"
+			JOIN posts b
+			ON b.id = a."postId"
+			JOIN users "c"
+			ON a."userId" = c.id
+			WHERE a."userId" = $1
+		)
+		ORDER BY "createdAt" DESC) p
     JOIN users u ON p."writerId" = u."id"
     LEFT JOIN "likesPosts" ON "likesPosts"."postId" = p.id
+	  LEFT JOIN "sharedPosts" ON "sharedPosts"."postId" = p.id
     LEFT JOIN comments ON p.id = comments."postId"
-  WHERE
-    u.id = $1
   GROUP BY
     p."id",
+	p."url",
+	p."description",
+	p."createdAt",
+	p."editedAt",
+	p."urlTitle",
+	p."urlDescription",
+	p."urlImage",
+	p."sharedBy",
     u."id"
   ORDER BY
     p.id DESC

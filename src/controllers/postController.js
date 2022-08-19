@@ -1,5 +1,5 @@
 import { getFollowersCount } from "../repositories/followRepository.js";
-import { postRepository, hashtagReposity } from "../repositories/index.js";
+import { postRepository, hashtagReposity, sharedRepository } from "../repositories/index.js";
 import { getUsernamesLikedPost } from "../repositories/likesRepository.js";
 
 export async function deletePost(req, res) {
@@ -68,7 +68,10 @@ export async function editPost(req, res) {
 export async function getPosts(req, res) {
   const { userId } = res.locals;
   try {
-    const { page } = req.query;
+    const { page, postId } = req.query;
+
+    const { rows: postCheck } = await postRepository.getNewPosts(postId);
+
     const pageNumber = Number(page);
 
     if (!pageNumber || pageNumber < 1) {
@@ -82,13 +85,13 @@ export async function getPosts(req, res) {
     let arrayPosts = [];
     let hasMorePosts = true;
 
-    if (posts.length <= 10) {
+    if (posts.length <= LIMIT) {
       arrayPosts = [...posts];
       hasMorePosts = false;
     } else {
-      arrayPosts = posts.slice(start, end);
+      arrayPosts = posts.slice(start + postCheck.length, end + postCheck.length);
 
-      if (arrayPosts.length < 10) {
+      if (arrayPosts.length < LIMIT) {
         hasMorePosts = false;
       }
     }
@@ -114,6 +117,7 @@ export async function getPosts(req, res) {
       followSomeone,
     };
     res.status(200).send(response);
+
   } catch (error) {
     res
       .status(500)
@@ -183,3 +187,60 @@ export async function createPost(req, res) {
       .send(`Internal system error.\n More details: ${error.message}`);
   }
 }
+
+export async function getNewPostsTimeline(req, res) {
+  try {
+    const { postId } = req.params;
+
+    const { rows: posts } = await postRepository.getNewPosts(postId);
+
+    let arrayPosts = [];
+    let hasMorePosts = true;
+
+    if (posts.length <= 10) {
+      arrayPosts = [...posts];
+      hasMorePosts = false;
+    } else {
+      arrayPosts = posts.slice(start, end);
+
+      if (arrayPosts.length < 10) {
+        hasMorePosts = false;
+      }
+    }
+
+    const postsWithLikes = await Promise.all(
+      arrayPosts.map(async (post) => {
+        const { rows: likesUsername } = await getUsernamesLikedPost(
+          post.postId
+        );
+
+        return {
+          ...post,
+          likesUsername: likesUsername.map(({ username }) => username),
+        };
+      })
+    );
+
+    const response = {
+      posts: postsWithLikes,
+      hasMorePosts,
+    };
+
+    res.status(200).send(response);
+  } catch (error) {
+    res
+      .status(500)
+      .send(`Internal system error.\n More details: ${error.message}`);
+  }
+}
+export async function sharePost(req, res) {
+	try {
+		const {id} = req.params;
+		const { userId } = res.locals;
+		await postRepository.insertSharedPost(id, userId);
+		res.status(201).send("You shared this post");
+	} catch (error) {
+		res.status(500)
+		.send(`Internal system error.\n More details: ${error.message}`);
+	}
+  }
