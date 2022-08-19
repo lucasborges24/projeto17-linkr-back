@@ -21,5 +21,10 @@ commentRouter.post(
   postComment
 );
 
-commentRouter.get("/comment/:postId", getCommentsByPostId);
+commentRouter.get(
+  "/comment/:postId",
+  validateHeaderSchema(tokenSchema),
+  checkTokenBelongsSomeUser,
+  getCommentsByPostId
+);
 export { commentRouter };
