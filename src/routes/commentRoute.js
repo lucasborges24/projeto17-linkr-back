@@ -1,30 +1,30 @@
 import { Router } from "express";
-import { deletePost, editPost } from "../controllers/postController.js";
+import {
+  getCommentsByPostId,
+  postComment,
+} from "../controllers/commentController.js";
 import {
   validateHeaderSchema,
   validateSchema,
 } from "../middlewares/schemaMiddleware.js";
 import { checkTokenBelongsSomeUser } from "../middlewares/tokenMiddleware.js";
-import { validateParamsId } from "../middlewares/userMiddleware.js";
 import { tokenSchema } from "../schemas/authSchema.js";
-import editSchema from "../schemas/editSchema.js";
+import commentSchema from "../schemas/commentSchema.js";
 
-const postRoute = Router();
+const commentRouter = Router();
 
-postRoute.delete(
-  "/post/:id",
+commentRouter.post(
+  "/comment/:postId",
   validateHeaderSchema(tokenSchema),
   checkTokenBelongsSomeUser,
-  validateParamsId,
-  deletePost
-);
-postRoute.put(
-  "/post/:id",
-  validateSchema(editSchema),
-  validateHeaderSchema(tokenSchema),
-  checkTokenBelongsSomeUser,
-  validateParamsId,
-  editPost
+  validateSchema(commentSchema),
+  postComment
 );
 
-export { postRoute };
+commentRouter.get(
+  "/comment/:postId",
+  validateHeaderSchema(tokenSchema),
+  checkTokenBelongsSomeUser,
+  getCommentsByPostId
+);
+export { commentRouter };
