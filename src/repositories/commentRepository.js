@@ -18,6 +18,7 @@ export const getPostComments = async (postId) => {
     SELECT 
       users.username,
       users.picture,
+      users.id AS "commentWriterId",
       comments.comment,
       comments.id
     FROM 
