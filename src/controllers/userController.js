@@ -14,7 +14,7 @@ export const getUserPosts = async (req, res) => {
   const pageNumber = Number(page);
 
   if (!pageNumber || pageNumber < 1) {
-    return res.status(401).send("Informe uma página válida");
+    return res.status(401).send("send a valid page number");
   }
 
   try {
@@ -22,9 +22,9 @@ export const getUserPosts = async (req, res) => {
     const { rows: posts } = await getUserPostsById(user.id);
     const { rowCount } = await getFollowerByIds(userId, user.id);
 
-    const limit = 10;
-    const start = (pageNumber - 1) * limit;
-    const end = pageNumber * limit;
+    const LIMIT = 10;
+    const start = (pageNumber - 1) * LIMIT;
+    const end = pageNumber * LIMIT;
 
     let arrayPosts = [];
     let hasMorePosts = true;

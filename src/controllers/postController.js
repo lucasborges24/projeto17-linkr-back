@@ -70,13 +70,13 @@ export async function getPosts(req, res) {
     const pageNumber = Number(page);
 
     if (!pageNumber || pageNumber < 1) {
-      return res.status(401).send("Informe uma página válida");
+      return res.status(401).send("Send a valid page number");
     }
     const { rows: posts } = await postRepository.getAllPosts();
 
-    const limit = 10;
-    const start = (pageNumber - 1) * limit;
-    const end = pageNumber * limit;
+    const LIMIT = 10;
+    const start = (pageNumber - 1) * LIMIT;
+    const end = pageNumber * LIMIT;
 
     let arrayPosts = [];
     let hasMorePosts = true;
